@@ -1,0 +1,1 @@
+forever ./build/tracker.js

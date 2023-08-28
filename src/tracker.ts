@@ -4,7 +4,7 @@ import path from 'path';
 
 let current: string | null = null;
 let lastTs = Date.now();
-const mem = new Map<string, {dur: number}>();
+const mem = new Map<string, {[title: string]: number}>();
 
 //the absolute path to the folder data being in the userdata folder of the app
 const dataPath = path.join(process.env.APPDATA || '', 'Simple Application Usage Time Tracker', 'data');
@@ -22,14 +22,20 @@ const saveData = () => {
         startTime: string, 
         lastSave: string,
     } = { startTime, lastSave}
-    for(const [name, time] of Array.from(mem.entries()).sort((a, b)=>{ return b[0] < a[0] ? -1 : 1})){
-        tmp[name] = time.dur;
+    
+    //current time as HH:MM:SS;
+    // const time = new Date().toLocaleTimeString();
+
+    for(const [name, info] of Array.from(mem.entries()).sort((a, b)=>{ return b[0] < a[0] ? -1 : 1})){
+        // console.log(name, time);
+        tmp[name] = info;
     }
     const data = JSON.stringify(tmp, null, 4);
     //save data to a file in the folder data with the name of the current date.
     fstat.writeFile(path.join(dataPath, filename), data, (err)=>{
         if(err) console.error(err);
     })
+    // console.log();
 }
 
 //a function that tracks the active window and saves the time spent on each window in a map
@@ -37,17 +43,23 @@ const trackActiveWindowTime = () => {
     activeWindow().then(win=>{
         const now = Date.now();
         const diff = now - lastTs;
+        const title = win?.title || 'unknown'
         lastTs = now;
         current = win ? win.owner.name : null;
         if(!current) return;
         const memCurrent = mem.get(current);
         if(!memCurrent) {
-            mem.set(current, {dur: diff});
+            const tmp: {[title:string]: number} = {};
+            tmp[title] = diff;
+            mem.set(current, tmp);
             return;
         }
-        else memCurrent.dur += diff;
+        else {
+            if(memCurrent[title]) memCurrent[title] += diff;
+            else memCurrent[title] = diff;
+        }
     }).catch(err=>console.error(err)).finally(()=>{
-        setTimeout(trackActiveWindowTime, 1000);
+        setTimeout(trackActiveWindowTime, 100);
         saveData();
     })
 }
