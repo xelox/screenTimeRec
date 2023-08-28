@@ -1,0 +1,9 @@
+{
+  "devDependencies": {
+    "@types/node": "^20.5.7"
+  },
+  "dependencies": {
+    "@types/active-win": "^5.1.0",
+    "active-win": "^8.1.0"
+  }
+}
