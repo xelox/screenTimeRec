@@ -1,4 +1,4 @@
-# Simple Local Time Tracker
+# Simple Application Usage Time Tracker
 This application records time spent on programs and saved it in the folder "data" within the project direcotry itself. Data is only collected and saved locally.
 
 ## Instructions to run this tracker on startup (Windows)
