@@ -9,8 +9,6 @@ const options: {
     delay: number,
 } = yaml.parse(optionsStr);
 
-console.log(options);
-
 let current: string | null = null;
 let lastTs = Date.now();
 const mem = new Map<string, {[title: string]: number}>();
@@ -19,25 +17,27 @@ const mem = new Map<string, {[title: string]: number}>();
 const dataPath = options.outputDir ?? path.join(process.env.APPDATA || '', 'Simple Application Usage Time Tracker', 'data');
 //create the folder data if it doesn't exist
 fstat.mkdirSync(dataPath, {recursive: true});
-//the start time of the program as 12-25-2020 12-00-00
-const filename = new Date().toLocaleString().replace(/\//g, '-').replace(/,/g, '').replace(/:/g, '-').replace(/ /g, '-')+'.json';
 //the start time of the program as a string like 28-12-2020 12:00:00
-const startTime = new Date().toLocaleString().replace(/\//g, '-').replace(/,/g, '');
+let startTime = new Date().toLocaleString().replace(/\//g, '-').replace(/,/g, '');
 
 const saveData = () => {
+    //the start time of the program as 12-25-2020.json
+    const filename = new Date().toLocaleString().replace(/\//g, '-').replace(/,/g, '').split(' ')[0] + '.json';
     const lastSave = new Date().toLocaleString().replace(/\//g, '-').replace(/,/g, '');
     const tmp: {
-        [key:string]: any, 
+        data: {
+            [key:string]: any, 
+        }
         startTime: string, 
         lastSave: string,
-    } = { startTime, lastSave}
+    } = { startTime, lastSave, data: {}};
     
     //current time as HH:MM:SS;
     // const time = new Date().toLocaleTimeString();
 
     for(const [name, info] of Array.from(mem.entries()).sort((a, b)=>{ return b[0] < a[0] ? -1 : 1})){
         // console.log(name, time);
-        tmp[name] = info;
+        tmp.data[name] = info;
     }
     const data = JSON.stringify(tmp, null, 4);
     //save data to a file in the folder data with the name of the current date.
@@ -73,4 +73,21 @@ const trackActiveWindowTime = () => {
     })
 }
 
+const initialize = () => {
+    //the start time of the program as 12-25-2020.json
+    const filename = new Date().toLocaleString().replace(/\//g, '-').replace(/,/g, '').split(' ')[0] + '.json';
+    const existingDataStr = fstat.readFileSync(path.join(dataPath, filename), "utf-8");
+    if(existingDataStr){
+        const existingData = JSON.parse(existingDataStr);
+        startTime = existingData.startTime;
+        for(const [name, element] of Object.entries(existingData.data)){
+            console.log(name, element);
+            const elementAs = element as {[title:string]: number};
+            mem.set(name, elementAs);
+        }
+    }
+    // console.log(mem);
+}
+
+initialize();
 trackActiveWindowTime();
