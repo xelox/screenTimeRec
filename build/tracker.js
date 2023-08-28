@@ -2,15 +2,20 @@
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
+var _a;
 Object.defineProperty(exports, "__esModule", { value: true });
 const active_win_1 = __importDefault(require("active-win"));
 const fs_1 = __importDefault(require("fs"));
 const path_1 = __importDefault(require("path"));
+const yaml_1 = __importDefault(require("yaml"));
+const optionsStr = fs_1.default.readFileSync("options.yaml", "utf-8");
+const options = yaml_1.default.parse(optionsStr);
+console.log(options);
 let current = null;
 let lastTs = Date.now();
 const mem = new Map();
 //the absolute path to the folder data being in the userdata folder of the app
-const dataPath = path_1.default.join(process.env.APPDATA || '', 'Simple Application Usage Time Tracker', 'data');
+const dataPath = (_a = options.outputDir) !== null && _a !== void 0 ? _a : path_1.default.join(process.env.APPDATA || '', 'Simple Application Usage Time Tracker', 'data');
 //create the folder data if it doesn't exist
 fs_1.default.mkdirSync(dataPath, { recursive: true });
 //the start time of the program as 12-25-2020 12-00-00
@@ -58,7 +63,7 @@ const trackActiveWindowTime = () => {
                 memCurrent[title] = diff;
         }
     }).catch(err => console.error(err)).finally(() => {
-        setTimeout(trackActiveWindowTime, 100);
+        setTimeout(trackActiveWindowTime, options.delay);
         saveData();
     });
 };

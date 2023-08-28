@@ -1,13 +1,22 @@
 import activeWindow from 'active-win';
 import fstat from 'fs';
 import path from 'path';
+import yaml from 'yaml';
+
+const optionsStr = fstat.readFileSync("options.yaml", "utf-8");
+const options: {
+    outputDir: string,
+    delay: number,
+} = yaml.parse(optionsStr);
+
+console.log(options);
 
 let current: string | null = null;
 let lastTs = Date.now();
 const mem = new Map<string, {[title: string]: number}>();
 
 //the absolute path to the folder data being in the userdata folder of the app
-const dataPath = path.join(process.env.APPDATA || '', 'Simple Application Usage Time Tracker', 'data');
+const dataPath = options.outputDir ?? path.join(process.env.APPDATA || '', 'Simple Application Usage Time Tracker', 'data');
 //create the folder data if it doesn't exist
 fstat.mkdirSync(dataPath, {recursive: true});
 //the start time of the program as 12-25-2020 12-00-00
@@ -59,7 +68,7 @@ const trackActiveWindowTime = () => {
             else memCurrent[title] = diff;
         }
     }).catch(err=>console.error(err)).finally(()=>{
-        setTimeout(trackActiveWindowTime, 100);
+        setTimeout(trackActiveWindowTime, options.delay);
         saveData();
     })
 }

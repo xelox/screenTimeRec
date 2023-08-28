@@ -13,6 +13,5 @@ In order to run this program in the background you may need to install with `npm
 5. Inside the folder that just opened, right click, hover "new", select "Shortcut".
 6. In the dialog that opens, paste the Path to "startTracker.bat" and press next, then press finish.
 
-
-## Future updates
-In the future I will add a config.json file to edit some options such as, how often the tracker should check which is the active window, where to save the data, how to format it, how to name the data file.
+## Options
+For setting output dir and frequency of checks modify options.yaml

@@ -1,0 +1,4 @@
+{
+    "outputDir": null, # null for default "%appdata%/Simple Application Usage Time Tracker/data"
+    "delay": 1000
+}
