@@ -1,4 +1,4 @@
-# Simple Application Usage Time Tracker
+# Simple Application-usage Time Tracker
 This application records time spent on programs and saves it in the folder %APPDATA%/Simple Application Usage Time Tracker/data folder. Data is only collected and saved locally.
 
 ## Requirements
