@@ -14,4 +14,8 @@ In order to run this program in the background you may need to install with `npm
 6. In the dialog that opens, paste the Path to "startTracker.bat" and press next, then press finish.
 
 ## Options
-For setting output dir and frequency of checks modify options.yaml
+To edit
+- The output directory
+- The filename format
+- The delay between each check
+Change `options.example.yaml` and rename it do `options.yaml`.
