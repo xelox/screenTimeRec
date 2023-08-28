@@ -8,6 +8,7 @@ const active_win_1 = __importDefault(require("active-win"));
 const fs_1 = __importDefault(require("fs"));
 const path_1 = __importDefault(require("path"));
 const yaml_1 = __importDefault(require("yaml"));
+const date_fns_1 = require("date-fns");
 const optionsStr = fs_1.default.readFileSync("options.yaml", "utf-8");
 const options = yaml_1.default.parse(optionsStr);
 let current = null;
@@ -18,25 +19,19 @@ const dataPath = (_a = options.outputDir) !== null && _a !== void 0 ? _a : path_
 //create the folder data if it doesn't exist
 fs_1.default.mkdirSync(dataPath, { recursive: true });
 //the start time of the program as a string like 28-12-2020 12:00:00
-let startTime = new Date().toLocaleString().replace(/\//g, '-').replace(/,/g, '');
+let startTime = Date.now();
 const saveData = () => {
+    var _a;
     //the start time of the program as 12-25-2020.json
-    const filename = new Date().toLocaleString().replace(/\//g, '-').replace(/,/g, '').split(' ')[0] + '.json';
-    const lastSave = new Date().toLocaleString().replace(/\//g, '-').replace(/,/g, '');
+    const filename = (0, date_fns_1.format)(Date.now(), (_a = options.filenameFormat) !== null && _a !== void 0 ? _a : "yyyy-dd-mm") + '.json';
+    const lastSave = Date.now();
     const tmp = { startTime, lastSave, data: {} };
-    //current time as HH:MM:SS;
-    // const time = new Date().toLocaleTimeString();
     for (const [name, info] of Array.from(mem.entries()).sort((a, b) => { return b[0] < a[0] ? -1 : 1; })) {
-        // console.log(name, time);
         tmp.data[name] = info;
     }
     const data = JSON.stringify(tmp, null, 4);
     //save data to a file in the folder data with the name of the current date.
-    fs_1.default.writeFile(path_1.default.join(dataPath, filename), data, (err) => {
-        if (err)
-            console.error(err);
-    });
-    // console.log();
+    fs_1.default.writeFileSync(path_1.default.join(dataPath, filename), data, "utf-8");
 };
 //a function that tracks the active window and saves the time spent on each window in a map
 const trackActiveWindowTime = () => {
@@ -67,8 +62,11 @@ const trackActiveWindowTime = () => {
     });
 };
 const initialize = () => {
-    //the start time of the program as 12-25-2020.json
-    const filename = new Date().toLocaleString().replace(/\//g, '-').replace(/,/g, '').split(' ')[0] + '.json';
+    var _a;
+    const filename = (0, date_fns_1.format)(Date.now(), (_a = options.filenameFormat) !== null && _a !== void 0 ? _a : "yyyy-MM-dd") + '.json';
+    //check if the file exists
+    if (!fs_1.default.existsSync(path_1.default.join(dataPath, filename)))
+        return;
     const existingDataStr = fs_1.default.readFileSync(path_1.default.join(dataPath, filename), "utf-8");
     if (existingDataStr) {
         const existingData = JSON.parse(existingDataStr);
@@ -79,7 +77,6 @@ const initialize = () => {
             mem.set(name, elementAs);
         }
     }
-    // console.log(mem);
 };
 initialize();
 trackActiveWindowTime();
