@@ -4,6 +4,7 @@
   },
   "dependencies": {
     "@types/active-win": "^5.1.0",
+    "@types/node-windows": "^0.1.3",
     "active-win": "^8.1.0"
   }
 }
