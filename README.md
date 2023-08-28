@@ -3,7 +3,7 @@ This application records time spent on programs and saved it in the folder "data
 
 ## Instructions to run this tracker on startup (Windows)
 
-Right click the file "startTracker.bat" from the project folder.
+Right click the file "startService.bat" from the dist folder.
 Click on "Copy as Path".
 Press Win+R to open the Run dialog.
 Type shell:startup and press Enter. This will open the Startup folder.
