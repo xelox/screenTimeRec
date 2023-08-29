@@ -2,7 +2,7 @@
 This application records time spent on programs and saves it in the folder %APPDATA%/Simple Application Usage Time Tracker/data folder. Data is only collected and saved locally.
 
 ## Requirements
-In order to run this program at all, you need nodejs installed, also, to run it in the background you may need to install with `npm install -g forever` the forever module, otherwise you can choose your own way to run build/tracker.js in the background, or even run it manually as you may need.
+In order to run this program at all you need nodejs installed, also, to run it in the background you may need to install with `npm install -g forever` the forever module, otherwise you can choose your own way to run build/tracker.js in the background, or even run it manually as you may need.
 
 ## Instructions to run this tracker on startup (Windows)
 
