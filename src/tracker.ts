@@ -21,10 +21,15 @@ const dataPath = options.outputDir ?? path.join(process.env.APPDATA || '', 'Simp
 fstat.mkdirSync(dataPath, {recursive: true});
 //the start time of the program as a string like 28-12-2020 12:00:00
 let startTime = Date.now();
-
+let lastSaveFile: string | null = null;
 const saveData = () => {
     //the start time of the program as 12-25-2020.json
     const filename = format(Date.now(), options.filenameFormat ?? "yyyy-dd-mm") + '.json';
+    if(lastSaveFile !== filename) {
+        lastSaveFile = filename;
+        mem.clear();
+        return
+    } 
     const lastSave = Date.now();
     const tmp: {
         data: {
@@ -41,6 +46,7 @@ const saveData = () => {
     const data = JSON.stringify(tmp, null, 4);
     //save data to a file in the folder data with the name of the current date.
     fstat.writeFileSync(path.join(dataPath, filename), data, "utf-8");
+    lastSaveFile = filename;
 }
 
 //a function that tracks the active window and saves the time spent on each window in a map
