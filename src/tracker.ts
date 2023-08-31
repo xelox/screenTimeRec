@@ -24,7 +24,7 @@ let startTime = Date.now();
 let lastSaveFile: string | null = null;
 const saveData = () => {
     //the start time of the program as 12-25-2020.json
-    const filename = format(Date.now(), options.filenameFormat ?? "yyyy-dd-mm") + '.json';
+    const filename = format(Date.now(), options.filenameFormat ?? "yyyy-MM-dd") + '.json';
     if(lastSaveFile !== filename) {
         lastSaveFile = filename;
         mem.clear();

@@ -22,13 +22,19 @@
   "dependencies": {
     "@electron-toolkit/preload": "^2.0.0",
     "@electron-toolkit/utils": "^2.0.0",
-    "electron-updater": "^6.1.1"
+    "chart.js": "^4.4.0",
+    "d3": "^7.8.5",
+    "date-fns": "^2.30.0",
+    "electron-updater": "^6.1.1",
+    "svelte-chartjs": "^3.1.2",
+    "yaml": "^2.3.2"
   },
   "devDependencies": {
     "@electron-toolkit/eslint-config-prettier": "^1.0.1",
     "@electron-toolkit/eslint-config-ts": "^1.0.0",
     "@electron-toolkit/tsconfig": "^1.0.1",
     "@sveltejs/vite-plugin-svelte": "^2.4.5",
+    "@types/d3": "^7.4.0",
     "@types/node": "^18.17.5",
     "electron": "^25.6.0",
     "electron-builder": "^24.6.3",

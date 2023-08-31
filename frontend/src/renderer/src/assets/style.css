@@ -1,0 +1,41 @@
+:root {
+  --super_dark: #18191a;
+  --wash: #222831;
+  --base: #393E46;
+  --middle: #C6DE41;
+  --detail: #FFD369;
+  --text: #dfdfdf;
+  --dimed_white: #c2c2c2;
+  --blue_label: rgba(73, 124, 153, 0.5);
+  --blue_detail: #95c4eb;
+
+  --pastel-green: #8cd673;
+  --pastel-orange: #d6bd73;
+  --pastel-red: #d68f73;
+  --pastel-blue: #95c4eb;
+
+  --dark-green: rgb(40, 54, 40);
+  --dark-red: rgb(58, 38, 38);
+  --dark-blue: rgb(44, 54, 61);
+
+  --gray: rgb(160, 160, 160);
+  --darkery_gray: rgb(104, 104, 104);
+  --super_text: white;
+
+  --small: 14px;
+  --normal: 18px;
+
+  --red: red;
+  --opposit_text: '#222'
+}
+body{
+  background-color: var(--dark-blue);
+  color: var(--text);
+}
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Nunito Sans', sans-serif;
+
+}
