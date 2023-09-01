@@ -4,8 +4,6 @@ import { readdir } from 'fs/promises'
 import { readFile } from 'fs/promises';
 import path from 'path';
 import { readFileSync } from 'fs';
-import fspromise from 'fs/promises';
-import fsync from 'fs';
 
 // Custom APIs for renderer
 const api = {
