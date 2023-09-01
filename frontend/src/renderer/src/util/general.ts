@@ -59,4 +59,5 @@ export function interpolateColor(value: number, colorStops: { position: number; 
             return `rgb(${r}, ${g}, ${b})`;
         }
     }
+    return '#000000';
 }
