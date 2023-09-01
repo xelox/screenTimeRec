@@ -1,53 +1,156 @@
 <script lang="ts">
     import { format } from "date-fns"
-    import { getMonday, getSunday } from "../util/time"
-    import BarChart from "./BarChart.svelte"
+    import { getMonday, getSunday, isSameDate } from "../util/time"
+    import type { stackedWeedGraphSchema } from "../util/schemas"
+    import CustomStackedChart from "./CustomStackedChart.svelte"
+    import { onMount } from "svelte"
+    let wrapDom: HTMLElement;
+    let topPos: number;
 
+    onMount(()=>{
+        if(!wrapDom) return;
+        topPos = wrapDom.getBoundingClientRect().top;
+    })
+    const currentDate = new Date();
     export let pivotDate: Date;
     export let saveFormat: string;
     export let saveDir: string;
 
-    let graphData = {
-        labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
-        datasets: [
-            {
-                label: 'Time spent',
-                data: [0, 0, 0, 0, 0, 0, 0],
-                backgroundColor: 'rgba(255, 99, 132, 0.2)',
-                borderColor: 'rgb(255, 99, 132)',
-                borderWidth: 1,
-                
+    let graphData: stackedWeedGraphSchema = {
+        dayData: {
+            Mon: {
+                actualDate: null,
+                total: 0,
+                appData: {}
             },
-        ],
-    }
+            Tue: {
+                actualDate: null,
+                total: 0,
+                appData: {}
+            },
+            Wed: {
+                actualDate: null,
+                total: 0,
+                appData: {}
+            },
+            Thu: {
+                actualDate: null,
+                total: 0,
+                appData: {}
+            },
+            Fri: {
+                actualDate: null,
+                total: 0,
+                appData: {}
+            },
+            Sat: {
+                actualDate: null,
+                total: 0,
+                appData: {}
+            },
+            Sun: {
+                actualDate: null,
+                total: 0,
+                appData: {}
+            },
+        },
+        max: 0,
+        min: 0,
+        appMax: 0,
+        appMin: 0,
+    };
 
     const loadWeek = async () => {
-        let data: {
-            Mon: number, Tue: number, Wed: number, Thu: number, Fri: number, Sat: number, Sun: number
-        } = {
-            Mon: 0, Tue: 0, Wed: 0, Thu: 0, Fri: 0, Sat: 0, Sun: 0
-        }
+        let tmpData: stackedWeedGraphSchema = {
+            dayData: {
+                Mon: {
+                    actualDate: null,
+                    total: 0,
+                    appData: {}
+                },
+                Tue: {
+                    actualDate: null,
+                    total: 0,
+                    appData: {}
+                },
+                Wed: {
+                    actualDate: null,
+                    total: 0,
+                    appData: {}
+                },
+                Thu: {
+                    actualDate: null,
+                    total: 0,
+                    appData: {}
+                },
+                Fri: {
+                    actualDate: null,
+                    total: 0,
+                    appData: {}
+                },
+                Sat: {
+                    actualDate: null,
+                    total: 0,
+                    appData: {}
+                },
+                Sun: {
+                    actualDate: null,
+                    total: 0,
+                    appData: {}
+                },
+            },
+            max: 0,
+            min: 0,
+            appMax: 0,
+            appMin: 0,
+        };
         for(let d = getMonday(pivotDate).getTime(); d <= getSunday(pivotDate).getTime(); d += (1000 * 60 * 60 * 24)){
-            const dataFile = window.api.path.join(saveDir, format(d, saveFormat) + '.json');
+            const fileName = format(d, saveFormat);
+            const dataFile = window.api.path.join(saveDir, fileName + '.json');
+            tmpData.dayData[format(d, 'EEE')].actualDate = fileName;
+            tmpData.dayData[format(d, 'EEE')].isCurrentDate = isSameDate(currentDate, new Date(d));
             try {
                 const file = window.api.readFileSync(dataFile);
                 const dateData = JSON.parse(file);
-                for(const subitems of Object.values(dateData.data)){
-                    for(const item of Object.values(subitems)){
-                        data[format(d, 'EEE')] += item;
+                for(const [app, subitems] of Object.entries(dateData.data)){
+                    // console.log(app);
+                    for(const time of Object.values(subitems)){
+                        // console.log(time);
+                        // const dayHolder = tmpData.dayData[format(d, 'EEE')];
+                        const dayHolder = tmpData.dayData[format(d, 'EEE')];
+                        const appHolder = dayHolder.appData[app];
+                        if(appHolder){
+                            dayHolder.appData[app] += time;
+                        } else {
+                            dayHolder.appData[app] = time;
+                        }
+                        dayHolder.total += time;
                     }
                 }
             } catch (error) {
-                // console.log(error);
+                // console.error(error);
             }
            
         }
-        graphData.datasets[0].data = Object.values(data);
-        console.log(graphData);
+        for(const day of Object.values(tmpData.dayData)){
+            if(day.total > tmpData.max) tmpData.max = day.total;
+            if(day.total < tmpData.min) tmpData.min = day.total;
+            for(const time of Object.values(day.appData)){
+                if(time > tmpData.appMax) tmpData.appMax = time;
+                if(time < tmpData.appMin) tmpData.appMin = time;
+            }
+        }
+        graphData = tmpData
     }
     $: if(pivotDate) loadWeek();
 </script>
 
-<main>
-    <BarChart data={graphData}/>
+<style>
+    main{
+        height: 100%;
+    }
+</style>
+
+<main bind:this={wrapDom} style="max-height: calc(100% - {topPos}px);">
+    <CustomStackedChart data={graphData} />
 </main>

@@ -39,3 +39,34 @@ body{
   font-family: 'Nunito Sans', sans-serif;
 
 }
+
+/* *{border: 1px solid rgba(255, 255, 255, 0.3);} */
+
+/* Target the whole scrollbar */
+::-webkit-scrollbar {
+  width: 0.3rem;
+  border-radius: 1rem;
+  opacity: 0.5;
+}
+
+/* Target the scrollbar thumb */
+::-webkit-scrollbar-thumb {
+  background-color: var(--detail);
+  border-radius: 1rem;
+}
+
+/* Target the scrollbar track */
+::-webkit-scrollbar-track {
+  background-color: transparent
+}
+
+/* Target the scrollbar buttons */
+::-webkit-scrollbar-button {
+  display: none;
+  /* You can hide the buttons if not needed */
+}
+
+/* Target the scrollbar corner */
+::-webkit-scrollbar-corner {
+  opacity: 0;
+}

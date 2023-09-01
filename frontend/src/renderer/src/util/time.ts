@@ -6,17 +6,17 @@ export function formatTime(elapsedTime) {
     seconds %= 60;
     minutes %= 60;
     hours %= 60;
-    let result = "";
+    let resultArr = [];
     if (hours > 0) {
-        result += `${hours}h `;
+        resultArr.push(`${hours}h`);
     }
     if (minutes > 0) {
-        result += `${minutes}m `;
+        resultArr.push(`${minutes}min`);
     }
-    if (seconds > 0) {
-        result += `${seconds}s`;
+    if (seconds > 0 && (!hours && !minutes)) {
+        resultArr.push(`${seconds}sec`);
     }
-    return result;
+    return resultArr.join(" ");
 }
 
 export function getMonday(date: Date) {
@@ -47,4 +47,13 @@ export function formatTimeHoursOnly(elapsedTime) {
         result += `${hours}h `;
     }
     return result;
+}
+
+export function isSameDate(date1: Date, date2: Date) {
+    // Compare year, month, and day components
+    return (
+        date1.getFullYear() === date2.getFullYear() &&
+        date1.getMonth() === date2.getMonth() &&
+        date1.getDate() === date2.getDate()
+    );
 }

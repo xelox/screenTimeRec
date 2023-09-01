@@ -2,7 +2,7 @@
     import { Line } from 'svelte-chartjs'
     export let data
     import 'chart.js/auto'
-    import { formatTimeHoursOnly } from '../util/time'
+    import { formatTime, formatTimeHoursOnly } from '../util/time'
 </script>
 
 <Line
@@ -19,10 +19,10 @@
             }
         },
         plugins: {
-            tooltips: {
+            tooltip: {
                 callbacks: {
-                    formattedValue: function (_context) {
-                        return 'hhh'
+                    label: function (context) {
+                        return formatTime(context.parsed.y)
                     }
                 }
             }
