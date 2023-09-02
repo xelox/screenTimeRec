@@ -1,3 +1,3 @@
 @echo off
-forever start build/tracker.js
+forever start build/index.js
 exit
