@@ -2,6 +2,9 @@ import activeWindow from "active-win";
 import {format} from 'date-fns';
 import {GlobalKeyboardListener} from "node-global-key-listener";
 import db_controller from "./db_controller";
+import extractFileIcon from "extract-file-icon";
+import path from "path";
+import fs from "fs";
 
 
 export type tmpActivityMap = {
@@ -27,11 +30,13 @@ export default class TrackerController{
     private isActiveExpiredTimer: NodeJS.Timeout | null = null;
     private v = new GlobalKeyboardListener();
 
+    private iconOutputDir = path.join(process.env.APPDATA ?? '.', 'screenTimeRec', 'icons');
     constructor(options: {
         checkInterval: number,
         saveInterval: number,
         activityTimeout: number
     }){
+        if(!fs.existsSync(this.iconOutputDir)) fs.mkdirSync(this.iconOutputDir, {recursive: true});
         this.checkInterval = options.checkInterval;
         this.saveInterval = options.saveInterval;
         this.activityTimeout = options.activityTimeout;
@@ -82,13 +87,15 @@ export default class TrackerController{
 
     private saveActivityMap = (useDate?: string) => {
         const date = useDate || format(Date.now(), 'yyyy-MM-dd');
+        console.clear();
+        console.log('saving activity map', date);
+        this.saveIcons();
         db_controller.saveActivity(this.activityMap, date);
         if(!useDate) setTimeout(this.saveActivityMap, this.saveInterval);
     }
 
     private initialize = () => {
         db_controller.getInitialData(this.lastCheckDate, (rows)=>{
-            console.log('rows', rows);
             for(const row of rows){
                 const application = this.activityMap[row.application];
                 if(application){
@@ -106,5 +113,16 @@ export default class TrackerController{
             this.trackActiveWindowTime();
             this.saveActivityMap();
         });
+    }
+
+    private saveIcons = () => {
+        for(const [application, props] of Object.entries(this.activityMap)){
+            if(props.icon || !props.path) continue;
+            if(fs.existsSync(path.join(this.iconOutputDir, application + '.png'))) continue;
+            console.log('saving icon', application);
+            const iconBuffer = extractFileIcon(props.path, 32)
+            fs.writeFileSync(path.join(this.iconOutputDir, application + '.png'), iconBuffer);
+            props.icon = true;
+        }
     }
 }

@@ -11,5 +11,6 @@ fstat.readFile('./options.yaml', 'utf-8').then(data=>{
 }).catch(err=>{
     console.log('config file not found, using default options');
 }).finally(()=>{
+    console.log(config);
     const tracker = new TrackerController(config);
 });

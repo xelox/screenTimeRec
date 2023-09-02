@@ -1,5 +1,5 @@
 {
-    checkInterval: 1_000,
-    saveInterval: 10_000,
-    activityTimeout: 30_000,
+    checkInterval: 1000,
+    saveInterval: 10000,
+    activityTimeout: 30000,
 }
