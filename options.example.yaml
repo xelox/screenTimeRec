@@ -1,5 +1,5 @@
 {
-    "outputDir": null, # null for default "%appdata%/Simple Application Usage Time Tracker/data"
-    "filenameFormat": null, # null for default "yyyy-MM-dd.json" check https://date-fns.org/v2.30.0/docs/format for more info
-    "delay": 1000
+    checkInterval: 1_000,
+    saveInterval: 10_000,
+    activityTimeout: 30_000,
 }
