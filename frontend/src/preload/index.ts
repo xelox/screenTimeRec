@@ -20,6 +20,7 @@ const api = {
     root: path.resolve(__dirname, '..', '..','..'),
     env: {...process.env},
     loadPeriod: dbController.loadPeriod,
+    loadDay: dbController.loadDay,
 }
 
 // Use `contextBridge` APIs to expose Electron APIs to

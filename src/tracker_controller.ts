@@ -41,14 +41,16 @@ export default class TrackerController{
         this.saveInterval = options.saveInterval;
         this.activityTimeout = options.activityTimeout;
 
-        const expire = ()=>{ this.isActive = false; };
+        const expire = ()=>{ 
+            this.isActive = false; 
+        };
         this.isActiveExpiredTimer = setInterval(expire, this.activityTimeout);
         this.v.addListener((key, event)=>{
             this.isActive = true;
             if(this.isActiveExpiredTimer) clearTimeout(this.isActiveExpiredTimer);
             this.isActiveExpiredTimer = setTimeout(expire, this.activityTimeout);
         });
-
+        
         setTimeout(this.initialize, 1000);
     }
 
@@ -87,8 +89,6 @@ export default class TrackerController{
 
     private saveActivityMap = (useDate?: string) => {
         const date = useDate || format(Date.now(), 'yyyy-MM-dd');
-        console.clear();
-        console.log('saving activity map', date);
         this.saveIcons();
         db_controller.saveActivity(this.activityMap, date);
         if(!useDate) setTimeout(this.saveActivityMap, this.saveInterval);
@@ -112,6 +112,7 @@ export default class TrackerController{
             }
             this.trackActiveWindowTime();
             this.saveActivityMap();
+            console.clear();
         });
     }
 

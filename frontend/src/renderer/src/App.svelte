@@ -1,23 +1,8 @@
 <script lang="ts">
-    import { onMount } from 'svelte'
-    import {format} from 'date-fns';
-    import { getMonday, getSunday } from './util/time'
-    import WeekPeriodGraph from './components/WeekPeriodGraph.svelte'
+    import DayViewer from './components/DayViewer.svelte'
+    import CustomStackedChart from './components/CustomStackedChart.svelte'
+    import AppAndCategoryEditor from './components/AppAndCategoryEditor.svelte'
 
-    function mouseScrollOnPeriod (e: WheelEvent) {
-        changePeriod(e.deltaY);
-    }
-
-    function changePeriod(d: number){
-        if(d < 0) pivotDate = new Date(pivotDate.setDate(pivotDate.getDate() - 7))
-        else pivotDate = new Date(pivotDate.setDate(pivotDate.getDate() + 7))
-    }
-
-    onMount(() => {
-        pivotDate = new Date();
-    })
-
-    let pivotDate: null | Date = null;
 </script>
 
 <style>
@@ -29,28 +14,6 @@
     }
     main>div{
         padding: 0 10px 0 10px;
-    }
-    .pivotDateControlls{
-        /* background-color: red; */
-        display: block;
-        width: max-content;
-        left: 50%;
-        position: relative;
-        transform: translateX(calc(-50%));
-        cursor: pointer;
-    }
-    button, .periodTitle{
-        background-color: var(--border-color);
-        color: var(--text);
-        border: none;
-        padding: 4px;
-        border-radius: 4px;
-        cursor:grabbing;
-        font-size: 1.1rem;
-    }
-    button{
-        width: 2rem;
-        text-align: center;
     }
     .periodViewPannel{
         /* border: 1px solid white; */
@@ -64,16 +27,12 @@
 
 <main>
     <div class="periodViewPannel">
-        {#if pivotDate}
-            <div class="pivotDateControlls" on:wheel={mouseScrollOnPeriod}>
-                <button on:click={() => {changePeriod(-1)}}>{'<'}</button>
-                <span class="periodTitle">{format(getMonday(pivotDate), 'do MMM')} to {format(getSunday(pivotDate), 'do MMM')}</span>
-                <button on:click={() => {changePeriod(1)}}>{'>'}</button>    
-            </div>
-            <WeekPeriodGraph {pivotDate}/>
-        {/if}
+        <CustomStackedChart/>
     </div>
     <div class="dayViewPannel">
-
+        <DayViewer/>
     </div>
 </main>
+
+<AppAndCategoryEditor/>
+

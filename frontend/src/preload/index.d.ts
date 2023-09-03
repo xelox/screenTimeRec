@@ -11,6 +11,7 @@ declare global {
             path: typeof import('path')
             env: typeof process.env
             loadPeriod: (start: string, end: string, callback: (err, rows: any[])=>void) => void
+            loadDay: (date: string, callback: (err, rows: any[])=>void) => void
         }
     }
 }

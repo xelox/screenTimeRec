@@ -52,5 +52,13 @@ class DBController {
         WHERE date BETWEEN ? AND ?
         `, [start, end], callback);
     }
+
+    public loadDay = (date: string, callback: (err, rows: any[])=>void) => {
+        this.db.all(`
+        SELECT application, date, active, time
+        FROM application_usage
+        WHERE date = ?
+        `, [date], callback);
+    }
 }
 export const dbController = new DBController();

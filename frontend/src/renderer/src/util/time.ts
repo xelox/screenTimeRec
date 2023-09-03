@@ -27,9 +27,10 @@ export function getMonday(date: Date) {
     return d;
 }
 
-export function getSunday(date) {
+export function getSunday(date: Date) {
     const d = new Date(date);
-    d.setDate(d.getDate() - d.getDay() + 7);
+    const delta = d.getDay() === 0 ? 0 : 7;
+    d.setDate(d.getDate() - delta);
     return d;
 }
 
