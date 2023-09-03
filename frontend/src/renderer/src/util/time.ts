@@ -16,26 +16,24 @@ export function formatTime(elapsedTime) {
     if (seconds > 0 && (!hours && !minutes)) {
         resultArr.push(`${seconds}sec`);
     }
+    if(!hours && !minutes && !seconds)
+        return"<1sec";
     return resultArr.join(" ");
 }
 
 export function getMonday(date: Date) {
-    var day = date.getDay() || 7; // Get current day of the week (0 is Sunday)
-    if (day !== 1) {
-        date.setHours(-24 * (day - 1)); // Set the date to the previous Monday
-    }
-    return date;
+    const d = new Date(date);
+    d.setDate(d.getDate() - d.getDay() + (d.getDay() === 0 ? -6 : 1));
+    return d;
 }
 
 export function getSunday(date) {
-    var day = date.getDay() || 7; // Get current day of the week (0 is Sunday)
-    if (day !== 0) {
-        date.setHours(24 * (7 - day)); // Set the date to the next Sunday
-    }
-    return date;
+    const d = new Date(date);
+    d.setDate(d.getDate() - d.getDay() + 7);
+    return d;
 }
 
-export function formatTimeHoursOnly(elapsedTime) {
+export function formatTimeHoursOnly(elapsedTime: number) {
     let seconds = Math.floor(elapsedTime / 1000);
     let minutes = Math.floor(seconds / 60);
     let hours = Math.floor(minutes / 60);
@@ -47,6 +45,28 @@ export function formatTimeHoursOnly(elapsedTime) {
         result += `${hours}h `;
     }
     return result;
+}
+
+export function formatTimeOnlyOneUnit(elapsedTime: number) {
+    let seconds = Math.floor(elapsedTime / 1000);
+    let minutes = Math.floor(seconds / 60);
+    let hours = Math.floor(minutes / 60);
+    seconds %= 60;
+    minutes %= 60;
+    hours %= 60;
+    let resultArr = [];
+    if (hours > 0) {
+        resultArr.push(`${hours}h`);
+    }
+    if (minutes > 0) {
+        resultArr.push(`${minutes}min`);
+    }
+    if (seconds > 0 && (!hours && !minutes)) {
+        resultArr.push(`${seconds}sec`);
+    }
+    if(!hours && !minutes && !seconds)
+        return"";
+    return resultArr.join(" ");
 }
 
 export function isSameDate(date1: Date, date2: Date) {

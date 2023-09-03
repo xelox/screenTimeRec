@@ -1,20 +1,11 @@
 <script lang="ts">
     import { onMount } from 'svelte'
     import {format} from 'date-fns';
-    import yaml from 'yaml'
     import { getMonday, getSunday } from './util/time'
     import WeekPeriodGraph from './components/WeekPeriodGraph.svelte'
 
     function mouseScrollOnPeriod (e: WheelEvent) {
         changePeriod(e.deltaY);
-    }
-
-    const options: {
-        saveDir: null | string,
-        saveFormat: string
-    } = {
-        saveDir: null,
-        saveFormat: 'yyyy-MM-dd'
     }
 
     function changePeriod(d: number){
@@ -23,19 +14,7 @@
     }
 
     onMount(() => {
-        let loadedOptions = {};
-        window.api.readFile(window.api.path.join(window.api.root, 'options.yaml'))
-        .then((optionsString) => {
-            loadedOptions = yaml.parse(optionsString)
-        })
-        .catch((err) => {
-            console.log(err)
-        })
-        .finally(() => {
-            options.saveDir = loadedOptions['outputDir'] ?? window.api.env.APPDATA
-            options.saveFormat = loadedOptions['filenameFormat'] ?? 'yyyy-MM-dd'
-            pivotDate = new Date();
-        });
+        pivotDate = new Date();
     })
 
     let pivotDate: null | Date = null;
@@ -91,7 +70,7 @@
                 <span class="periodTitle">{format(getMonday(pivotDate), 'do MMM')} to {format(getSunday(pivotDate), 'do MMM')}</span>
                 <button on:click={() => {changePeriod(1)}}>{'>'}</button>    
             </div>
-            <WeekPeriodGraph {pivotDate} saveFormat={options.saveFormat} saveDir={options.saveDir}/>
+            <WeekPeriodGraph {pivotDate}/>
         {/if}
     </div>
     <div class="dayViewPannel">

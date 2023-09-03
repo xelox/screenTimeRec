@@ -4,7 +4,7 @@ import { readdir } from 'fs/promises'
 import { readFile } from 'fs/promises';
 import path from 'path';
 import { readFileSync } from 'fs';
-
+import { dbController } from './db_controller';
 // Custom APIs for renderer
 const api = {
     readDir: async (path: string) => {
@@ -19,6 +19,7 @@ const api = {
     path: path,
     root: path.resolve(__dirname, '..', '..','..'),
     env: {...process.env},
+    loadPeriod: dbController.loadPeriod,
 }
 
 // Use `contextBridge` APIs to expose Electron APIs to

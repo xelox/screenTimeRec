@@ -22,7 +22,8 @@ function createWindow(): void {
         webPreferences: {
             devTools: true,
             preload: join(__dirname, '../preload/index.js'),
-            sandbox: false
+            sandbox: false,
+            webSecurity: false,
         }
     })
 

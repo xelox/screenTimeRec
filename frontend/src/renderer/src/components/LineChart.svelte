@@ -13,7 +13,7 @@
             y: {
                 ticks: {
                     callback: function (value, _index, _ticks) {
-                        return formatTimeHoursOnly(value)
+                        return formatTimeHoursOnly(Number(value))
                     }
                 }
             }
