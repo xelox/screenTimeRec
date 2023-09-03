@@ -112,7 +112,6 @@ export default class TrackerController{
             }
             this.trackActiveWindowTime();
             this.saveActivityMap();
-            console.clear();
         });
     }
 
