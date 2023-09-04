@@ -1,7 +1,8 @@
 <script lang="ts">
-    import DayViewer from './components/DayViewer.svelte'
     import CustomStackedChart from './components/CustomStackedChart.svelte'
     import AppAndCategoryEditor from './components/AppAndCategoryEditor.svelte'
+    import SimpleList from './components/simpleList.svelte'
+    import PivotAndPeriodControlls from './components/PivotAndPeriodControlls.svelte';
 
 </script>
 
@@ -10,27 +11,27 @@
         padding: 20px 0 20px 0;
         display: flex;
         height: 100vh;
-        position: relative;
     }
     main>div{
         padding: 0 10px 0 10px;
     }
     .periodViewPannel{
-        /* border: 1px solid white; */
-        flex: 1;
+        padding: 0 100px 0 100px;
     }
-    .dayViewPannel{
-        border-left: 1px solid rgba(0, 0, 0, 0.226);
-        flex: 1
+    .simpleListWrap{
+        width: 700px;
+        height: calc(100vh - 40px);
+        display: block;
     }
 </style>
 
 <main>
     <div class="periodViewPannel">
+        <PivotAndPeriodControlls/>
         <CustomStackedChart/>
     </div>
-    <div class="dayViewPannel">
-        <DayViewer/>
+    <div class="simpleListWrap">
+        <SimpleList/>
     </div>
 </main>
 

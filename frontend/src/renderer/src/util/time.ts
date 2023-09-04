@@ -16,8 +16,10 @@ export function formatTime(elapsedTime) {
     if (seconds > 0 && (!hours && !minutes)) {
         resultArr.push(`${seconds}sec`);
     }
-    if(!hours && !minutes && !seconds)
+    if(!hours && !minutes && !seconds && elapsedTime > 0)
         return"<1sec";
+    else if(!hours && !minutes && !seconds && elapsedTime === 0)
+        return"0ms";
     return resultArr.join(" ");
 }
 
@@ -29,7 +31,8 @@ export function getMonday(date: Date) {
 
 export function getSunday(date: Date) {
     const d = new Date(date);
-    const delta = d.getDay() === 0 ? 0 : 7;
+    if(d.getDay() === 0) return d;
+    const delta = d.getDay() === 1 ? -6 : (8 - d.getDay());
     d.setDate(d.getDate() - delta);
     return d;
 }

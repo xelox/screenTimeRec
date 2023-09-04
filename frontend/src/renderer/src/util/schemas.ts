@@ -14,6 +14,7 @@ export type stackedWeedGraphSchema = {
                     total: number
                     inactiveTime: number
                     activeTime: number
+                    category: string
                 }
             }
         },
@@ -27,6 +28,7 @@ export type stackedWeedGraphSchema = {
                     total: number
                     inactiveTime: number
                     activeTime: number
+                    category: string
                 }
             }
         },
@@ -40,6 +42,7 @@ export type stackedWeedGraphSchema = {
                     total: number
                     inactiveTime: number
                     activeTime: number
+                    category: string
                 }
             }
         },
@@ -53,6 +56,7 @@ export type stackedWeedGraphSchema = {
                     total: number
                     inactiveTime: number
                     activeTime: number
+                    category: string
                 }
             }
         },
@@ -66,6 +70,7 @@ export type stackedWeedGraphSchema = {
                     total: number
                     inactiveTime: number
                     activeTime: number
+                    category: string
                 }
             }
         },
@@ -79,6 +84,7 @@ export type stackedWeedGraphSchema = {
                     total: number
                     inactiveTime: number
                     activeTime: number
+                    category: string
                 }
             }
         },
@@ -92,6 +98,7 @@ export type stackedWeedGraphSchema = {
                     total: number
                     inactiveTime: number
                     activeTime: number
+                    category: string
                 }
             },
         }
@@ -119,12 +126,19 @@ export type appListSchema = {
         total: number,
         activeTime: number,
         inactiveTime: number,
+        category: string
     }
 }
 
 export type categorySchema = {
-    id: string,
-    name: string,
-    color: string,
-    icon: string,
-}[]
+    [id: string]: {
+        category_id: string,
+        category_name: string,
+        color: string,
+        emojy: string,
+    }
+}
+
+export type categoryMapSchema = {
+    [application: string]: string
+}

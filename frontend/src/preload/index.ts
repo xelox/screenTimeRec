@@ -21,6 +21,9 @@ const api = {
     env: {...process.env},
     loadPeriod: dbController.loadPeriod,
     loadDay: dbController.loadDay,
+    loadCategories: dbController.loadCategories,
+    setAppCategory: dbController.setAppCategory,
+    saveNewCategoryProp: dbController.saveNewCategoryProp,
 }
 
 // Use `contextBridge` APIs to expose Electron APIs to

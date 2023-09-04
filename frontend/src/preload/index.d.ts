@@ -12,6 +12,9 @@ declare global {
             env: typeof process.env
             loadPeriod: (start: string, end: string, callback: (err, rows: any[])=>void) => void
             loadDay: (date: string, callback: (err, rows: any[])=>void) => void
+            loadCategories: (callback: (err:any, rows: any[])=>void) => void
+            setAppCategory: (application: string, category: string, callback: (err:any)=>void) => void
+            saveNewCategoryProp: (category_id: string, category_name: string, color: string, emojy: string, callback: (err:any)=>void) => void
         }
     }
 }
