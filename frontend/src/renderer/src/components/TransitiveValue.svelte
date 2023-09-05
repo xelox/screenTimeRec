@@ -2,12 +2,14 @@
     import { formatTimeConstantStringSize } from "../util/time"
 
     let displayValue = 0;
-    export let targetValue = 0;
-    export let duration = 500;
     let beforeMutation = 0;
     let mutationStartTs = Date.now();
 
-    function easeFunc(x: number): number {
+    export let formatFunction = formatTimeConstantStringSize;
+    export let delay = 0;
+    export let targetValue = 0;
+    export let duration = 500;
+    export let easeFunc = (x: number): number => {
         return x === 1 ? 1 : 1 - Math.pow(2, -10 * x);
     }
 
@@ -15,12 +17,12 @@
 
     let intervalId: NodeJS.Timer | null = null;
 
-    const startMutation = (targetValue) => {
-        console.log('targetValue', targetValue)
-        mutationStartTs = Date.now();
-        beforeMutation = displayValue;
-        if(intervalId) clearInterval(intervalId);
-        intervalId = setInterval(() => {
+    const startMutation = (targetValue: number) => {
+        setTimeout(() => {
+            mutationStartTs = Date.now();
+            beforeMutation = displayValue;
+            if(intervalId) clearInterval(intervalId);
+            intervalId = setInterval(() => {
             const t = Date.now() - mutationStartTs;
             const p = t / duration;
             const progress = easeFunc(p);
@@ -32,11 +34,12 @@
             }
             displayValue = Math.floor(beforeMutation + (targetValue - beforeMutation) * progress);
         }, interval);
+        }, delay)
     }
 
     $: startMutation(targetValue);
 </script>
 
-<span style="white-space: pre; font-family: 'Monocraft Nerd Font', monospace;">
-{formatTimeConstantStringSize(displayValue)}
+<span>
+    {formatFunction(displayValue)}
 </span>

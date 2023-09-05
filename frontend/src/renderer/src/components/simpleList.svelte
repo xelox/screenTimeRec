@@ -45,10 +45,10 @@
         class="noDataIndicator"
         style="
         text-align: center; 
-        max-height: {Object.keys(list).length ? '1px' : '100%'};
         opacity: {Object.keys(list).length ? '0' : '1'};
         display: block;
         overflow: hidden;
+        font-size: 1.5rem;
         transition: all 0.5s ease-in-out;"
     >
         <span>No data available here!</span>

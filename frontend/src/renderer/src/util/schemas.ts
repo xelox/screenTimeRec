@@ -126,7 +126,6 @@ export type appListSchema = {
         total: number,
         activeTime: number,
         inactiveTime: number,
-        category: string
     }
 }
 
