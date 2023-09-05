@@ -273,15 +273,16 @@
     }
     .hoverTooltip {
         pointer-events: none;
-        background-color: var(--base);
+        background-color: var(--wash);
         display: block;
         position: fixed;
-        transform: translate(0, -40px);
-        padding: 4px;
-        transition: all 0.1s ease-in-out;
+        transform: translate(0, -80px);
+        padding: 12px;
+        transition: all 0.1s cubic-bezier(0.16, 1, 0.3, 1);
         border-radius: 4px;
-        border: 1px solid var(--border-color);
-        z-index: 2;
+        border: 1px solid rgb(255, 0, 157);
+        font-size: 1.1rem;
+        z-index: 8;
     }
     .chartBarHoveredTip {
         left: 50%;

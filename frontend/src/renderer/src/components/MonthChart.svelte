@@ -253,10 +253,10 @@
         overflow: hidden;
     }
     .cell:hover{
-        background-color: var(--base);
+        background-color: var(--wash);
         transform: scale(1.3);
         border-radius: 4px;
-        border: 1px solid black;
+        border: 1px solid var(--border-color);
         z-index: 3;
     }
     .cell:hover .dayOfMonth{
@@ -292,7 +292,7 @@
         display: flex;
         flex-direction: column;
         justify-content: flex-end;
-        transition: all 0.2s ease-in-out;
+        transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
     }
     .cellContentWrap div{
         pointer-events: none;
@@ -321,16 +321,16 @@
     .hoverTooltipWrap{
         pointer-events: none;
         background-color: var(--wash);
-        border: 1px solid var(--border-color);
+        border: 1px solid rgb(255, 0, 157);
         position: absolute;
         z-index: 8;
         width: 300px;
-        padding: 4px;
+        padding: 12px;
         border-radius: 4px;
-        transform: translate(calc(-300px / 7 * 3 - 50%), calc(-300px / 7 * 2 + 50px));
+        transform: translate(calc(-300px / 7 * 3 - 50%), calc(-300px / 7 * 2 + 56px));
         min-width: 100px;
         min-height: 100px;
-        transition: all 0.1s ease-in-out;
+        transition: all 0.3s ease-out;
     }
     .hoverTooltipWrap::after{
         content: '';
@@ -339,8 +339,9 @@
         position: absolute;
         left: 50%;
         top: 0;
-        width: 10px;
-        height: 10px;
+        width: 20px;
+        height: 20px;
+        border-top-left-radius: 4px;
         transform: translate(-50%, -50%) rotate(45deg);
         border-bottom: none;
         border-right: none;

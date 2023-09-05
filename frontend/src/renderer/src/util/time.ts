@@ -82,10 +82,11 @@ export function formatTimeConstantStringSize(elapsedTime: number) {
     hours %= 60;
     let resultArr = [];
     if (hours > 0) {
-        resultArr.push(`${hours.toString().padStart(2, '0')}h`);
+        resultArr.push(`${hours}h`);
     }
     if (minutes > 0) {
-        resultArr.push(`${minutes.toString().padStart(2, '0')}min`);
+        const minutesString = hours > 0 ? minutes.toString().padStart(2, '0') : minutes;
+        resultArr.push(`${minutesString}min`);
     } else if(hours > 0) { //if there are no minutes, but there are hours, add 00min
         resultArr.push(`00min`);
     }
