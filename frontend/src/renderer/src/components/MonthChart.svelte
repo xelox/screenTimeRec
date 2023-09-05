@@ -3,11 +3,17 @@
     import { categoryStore } from "../store/categoryStore"
     import type { appListSchema } from "../util/schemas"
     import { formatTime } from "../util/time"
+    import {categoryMapStore} from "../store/categoryStore";
+    import TransitiveValue from "./TransitiveValue.svelte"
 
     export let start: string
     export let end: string
 
     type Cell = {
+        dayNum?: {
+            dayNum: number,
+            opacity: number
+        },
         total: number,
         isCurrent?: boolean,
         categories: {
@@ -38,17 +44,6 @@
 
     let weekTotals: number[] = [0, 0, 0, 0, 0, 0, 0];
 
-    function sumColumn(column: number){
-        let sum = 0;
-       
-        for(let i = 0; i < 7; i++){
-            console.log(grid[i][column])
-            sum += grid[i][column].total;
-        }
-        console.log('summing column', column + 1, 'resulted in', sum);
-        return sum;
-    }
-
     function findDateCell(date: Date): { row: number; column: number } {
         const firstOfMonth = new Date(date.getFullYear(), date.getMonth(), 1);
         const initial = (firstOfMonth.getDay() + 6) % 7;
@@ -69,6 +64,7 @@
 
     const loadData = () => {
         const now = format(new Date(), 'yyyy-MM-dd');
+        console.log(start, end);
         const tmpGrid: Grid = [
             [{total: 0, categories: {}}, {total: 0, categories: {}}, {total: 0, categories: {}}, {total: 0, categories: {}}, {total: 0, categories: {}}, {total: 0, categories: {}}],
             [{total: 0, categories: {}}, {total: 0, categories: {}}, {total: 0, categories: {}}, {total: 0, categories: {}}, {total: 0, categories: {}}, {total: 0, categories: {}}],
@@ -78,6 +74,7 @@
             [{total: 0, categories: {}}, {total: 0, categories: {}}, {total: 0, categories: {}}, {total: 0, categories: {}}, {total: 0, categories: {}}, {total: 0, categories: {}}],
             [{total: 0, categories: {}}, {total: 0, categories: {}}, {total: 0, categories: {}}, {total: 0, categories: {}}, {total: 0, categories: {}}, {total: 0, categories: {}}],
         ];
+     
         const tmpList: appListSchema = {};
         window.api.loadPeriod(start, end, (err, data) => {
             const tmpWeekTotals = [0, 0, 0, 0, 0, 0, 0];
@@ -85,9 +82,14 @@
                 console.log(err)
                 return
             }
+            for(let i = 0; i < 7; i++){
+                for(let j = 0; j < 6; j++)
+                    tmpGrid[i][j].dayNum = dayNumAtCoordinates(j, i);
+            }
             // console.log(rows)
             for(const dataBit of data){
                 const app = dataBit.application;
+                if(!$categoryMapStore[app]) $categoryMapStore[app] = dataBit.category_id;
                 if(app === 'unknown') continue;
                 const coords = findDateCell(new Date(dataBit.date));
                 const category = dataBit.category_id ?? 'Uncategorized';
@@ -125,7 +127,7 @@
             <div class="row">
                 <div class="headLabel">{daysOfWeek[i]}</div>
                 {#each rows as cell, j}
-                    <div class="cell" style="background-color:{cell.isCurrent ? 'var(--wash)' : 'none'}">
+                    <div class="cell" style="background-color:{cell.isCurrent ? 'var(--wash)' : ''}">
                         <div class="cellContentWrap" style="max-height: {Object.keys(cell.categories).length ? '100%' : '0%'}">
                             {#each Object.entries(cell.categories).sort((a, b)=>{return a[1] - b[1]}) as [category, time]}
                                 <div 
@@ -137,10 +139,10 @@
                                 </div>
                             {/each}
                         </div>
-                        <div class="dayOfMonth" style="opacity: {dayNumAtCoordinates(j, i).opacity}; background-color:{cell.isCurrent ? 'var(--pastel-red)' : 'none'}; color:{cell.isCurrent?'black':'inherit'}"><span>{dayNumAtCoordinates(j, i).dayNum}</span></div>
+                        <div class="dayOfMonth" style="opacity: {cell.dayNum?.opacity || 0}; background-color:{cell.isCurrent ? 'var(--pastel-red)' : ''}; color:{cell.isCurrent?'black':'inherit'}"><span>{cell.dayNum?.dayNum || ''}</span></div>
                     </div>
                     {#if i === 0}
-                        <div class="weekWrap" style="top: {j * (300/7)}px"><span>{formatTime(weekTotals[j])}</span></div>
+                        <div class="weekWrap" style="top: {j * (300/7)}px"><span><TransitiveValue targetValue={weekTotals[j]}/></span></div>
                     {/if}
                 {/each}
             </div>
@@ -151,14 +153,15 @@
 <style>
     .headLabel{
         position: absolute;
-        top: calc(-1rem - 4px);
+        bottom: calc(-1rem - 12px);
+        transform:  rotate(15deg);
         width: 100%;
         text-align: center;
     }
     .chartWrap{
         display: flex;
         position: relative;
-        margin-top: 2rem;
+        margin-top: 0rem;
         border: 1px solid var(--border-color);
     }
     .row{
@@ -177,13 +180,19 @@
         display: flex;
         flex-direction: column;
         justify-content: flex-end;
+        transition: transform 0.1s ease-in-out;
+        overflow: hidden;
     }
     .cell:hover{
         background-color: var(--base);
+        transform: scale(1.3);
+        border-radius: 4px;
+        border: 1px solid black;
+        z-index: 3;
     }
     .cell:hover .dayOfMonth{
         background-color: var(--pastel-red);
-        color: black;
+        color: black !important;
     }
     /* .cell:last-child{
         border-bottom: none;

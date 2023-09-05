@@ -70,3 +70,23 @@ body{
 ::-webkit-scrollbar-corner {
   opacity: 0;
 }
+
+@font-face {
+  font-family: 'Monocraft Nerd Font';
+  src: url('./Monocraft-nerd-fonts-patched.ttf');
+}
+
+@font-face {
+  font-family: 'scientifica';
+  src: url('./scientifica.ttf');
+}
+/* 
+@font-face {
+  font-family: 'Monocraft Nerd Font';
+  src: url('./Monocraft-nerd-fonts-patched.ttf');
+}
+
+@font-face {
+  font-family: 'Monocraft Nerd Font';
+  src: url('./Monocraft-nerd-fonts-patched.ttf');
+} */

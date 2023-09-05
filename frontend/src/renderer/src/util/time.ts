@@ -32,7 +32,7 @@ export function getMonday(date: Date) {
 export function getSunday(date: Date) {
     const d = new Date(date);
     if(d.getDay() === 0) return d;
-    const delta = d.getDay() === 1 ? -6 : (8 - d.getDay());
+    const delta = d.getDay() % 7 - 7;
     d.setDate(d.getDate() - delta);
     return d;
 }
@@ -70,6 +70,27 @@ export function formatTimeOnlyOneUnit(elapsedTime: number) {
     }
     if(!hours && !minutes && !seconds)
         return"";
+    return resultArr.join(" ");
+}
+
+export function formatTimeConstantStringSize(elapsedTime: number) {
+    let seconds = Math.floor(elapsedTime / 1000);
+    let minutes = Math.floor(seconds / 60);
+    let hours = Math.floor(minutes / 60);
+    seconds %= 60;
+    minutes %= 60;
+    hours %= 60;
+    let resultArr = [];
+    if (hours > 0) {
+        resultArr.push(`${hours.toString().padStart(2, '0')}h`);
+    }
+    if (minutes > 0) {
+        resultArr.push(`${minutes.toString().padStart(2, '0')}min`);
+    } else if(hours > 0) { //if there are no minutes, but there are hours, add 00min
+        resultArr.push(`00min`);
+    }
+    if(!hours && !minutes)
+        return"<1min";
     return resultArr.join(" ");
 }
 

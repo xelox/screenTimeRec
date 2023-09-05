@@ -16,7 +16,7 @@
         padding: 0 10px 0 10px;
     }
     .periodViewPannel{
-        padding: 0 100px 0 100px;
+        padding: 0 50px 0 150px;
     }
     .simpleListWrap{
         width: 700px;

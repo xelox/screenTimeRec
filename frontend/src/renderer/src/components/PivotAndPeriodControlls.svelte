@@ -72,7 +72,17 @@
 </div>
 <div class="pivotDateControlls" on:wheel={mouseScrollOnPeriod}>
     <button on:click={() => {changePeriod(-1)}}>{'<'}</button>
-    <span class="periodTitle">{`${periodType !== 'day' ? `${start} - ${end}` : start}`}</span>
+    <span class="periodTitle">
+        {#if periodType === 'day'}
+        {format(pivotDate, 'do MMM yyyy')}
+        {:else if periodType === 'week'}
+        from {format(pivotDate, 'EE do MMM yyyy')}
+        {:else if periodType === 'month'}
+        {format(pivotDate, 'MMM yyyy')}
+        {:else if periodType === 'year'}
+        {format(pivotDate, 'yyyy')}
+        {/if}
+    </span>
     <button on:click={() => {changePeriod(1)}}>{'>'}</button>    
 </div>
 

@@ -5,6 +5,7 @@
     import WeekChart from './WeekChart.svelte'
     import {activeSortStore} from '../store/globalSort'
     import MonthChart from './MonthChart.svelte'
+    import { fade, scale, slide } from 'svelte/transition'
 
    
 
@@ -25,7 +26,7 @@
 
   
 
-    let periodType = 'week';
+    let periodType = 'month';
     let start = format(getMonday(new Date()), 'yyyy-MM-dd');
     let end = format(getSunday(new Date()), 'yyyy-MM-dd');
 
@@ -34,7 +35,6 @@
             start = e.detail.start;
             end = e.detail.end;
             periodType = e.detail.periodType;
-            console.log(start, end, e.detail.periodType);
         })
     })
 
@@ -43,9 +43,13 @@
 
 <main>
     {#if periodType === 'week'}
-        <WeekChart start={start} end={end}/>
+        <div in:scale>
+            <WeekChart start={start} end={end}/>
+        </div>
     {:else if periodType === 'month'}
-        <MonthChart start={start} end={end}/>
+        <div in:scale>
+            <MonthChart start={start} end={end}/>
+        </div>
     {/if}
     <div class="sortControlls">
         <div>

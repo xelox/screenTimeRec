@@ -6,6 +6,7 @@
     import { flip } from "svelte/animate"
     import { quintOut } from "svelte/easing"
     import {activeSortStore} from '../store/globalSort'
+    import TransitiveValue from "./TransitiveValue.svelte"
 
     let mouseX: number
     let mouseY: number
@@ -120,7 +121,6 @@
                 appMax: 0,
                 appMin: 0
             }
-            console.log(monday, sunday);
             let dI = getMonday(pivotDate).getTime()
             for (let i = 0; i < 7; i++) {
                 const date = format(dI, 'yyyy-MM-dd')
@@ -215,7 +215,7 @@
 <div class="chartWrap">
     <div class="yAxisWrap">
         {#each new Array(7) as _yLabel, i}
-            <div class="yLabel" style="top: {((300 / 7) * ( 6 - i))}px"><span>{formatTime((graphData.max / 7) * (i + 1))}</span></div>
+            <div class="yLabel" style="top: {((300 / 7) * ( 6 - i))}px"><span><TransitiveValue targetValue={Math.floor((graphData.max / 7) * (i + 1))} /></span></div>
         {/each}
     </div>
     <div class="barChartWrap">
@@ -228,9 +228,9 @@
             const event = new CustomEvent('setDateToView', { detail: apps.actualDateISO })
             window.dispatchEvent(event)
         }}>
-            <div class='dayHolderDataHolder' style="max-height: {Object.keys(apps.appData).length ? 300 : 1}px;" >
+            <div class='dayHolderDataHolder'>
                 <div class="xLabel">{day}</div>
-                <div class="appBoxWrap">
+                <div class="appBoxWrap" style="max-height: {Object.keys(apps.appData).length ? 300 : 1}px;">
                     {#each Object.entries(apps.appData).sort($activeSortStore) as [app, time] (app)}
                         <!-- svelte-ignore a11y-no-static-element-interactions -->
                         <div
@@ -324,7 +324,6 @@
         height: 100%;
         border-radius: 4px;
         border: 1px solid var(--border-color);
-        overflow: hidden;
         z-index: 2;
     }
     .dayHolder:last-child {
@@ -339,9 +338,9 @@
         align-items: flex-end;
     }
     .dayHolderDataHolder {
-        width: calc(298px / 7);
-        display: block;
-        transition: max-height 0.2s ease-in-out;
+        width: calc(100% - 20px);
+        left: 10px;
+        position: relative;
     }
     .dayHolder:hover {
         background-color: var(--base);
@@ -351,27 +350,39 @@
         /* border: 1px solid var(--super_dark) !important; */
     }
     .xLabel {
-        transform: translateY(24px) rotate(15deg);
+        transform: translate(-10px, 24px) rotate(15deg);
         width: calc(300px / 7);
         text-align: center;
         transform-origin: 0 0;
         position: absolute;
         bottom: 0;
+        left: 0;
     }
     .appBoxWrap {
+        display: block;
+        transition: max-height 0.2s ease-in-out;
         height: 100%;
         display: flex;
         flex-direction: column-reverse;
         justify-content: flex-start;
         align-items: center;
+        /* overflow: hidden; */
+        bottom: 2px;
+        position: relative;
+        z-index: 2;
     }
     .appBox {
         width: 100%;
         color: black;
-        overflow: hidden;
         z-index: 2;
+        overflow: hidden;
+        transition: all 0.1s ease-in-out;
     }
     .appBox:hover {
-        border: 1px solid var(--pastel-red);
+        border: 1px solid black;
+        border-radius: 4px;
+        transform: scaleX(1.3);
+        z-index: 5;
+
     }
 </style>

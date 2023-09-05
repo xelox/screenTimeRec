@@ -9,6 +9,7 @@
     import { categoryMapStore, categoryStore } from '../store/categoryStore'
     import { fade } from 'svelte/transition'
     import {activeSortStore} from '../store/globalSort'
+    import TransitiveValue from './TransitiveValue.svelte'
 
     let list: appListSchema = {}
     let max: number = 0
@@ -81,9 +82,8 @@
                             normalizeValue(total.total, min, max),
                             colorScale
                         )};"
-                        >{formatTime(total.total)}
-                        {$categoryStore[$categoryMapStore[app] ?? 'Uncategorized']?.emojy ||
-                            ''}</span
+                        ><TransitiveValue targetValue={total.total} />
+                        {$categoryStore[$categoryMapStore[app] ?? 'Uncategorized']?.emojy || ''}</span
                     >
                 </div>
             {/each}

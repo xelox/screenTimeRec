@@ -10,7 +10,7 @@
     let nameBeforeEdit = '';
     let colorBeforeEdit = '';
     let emojyBeforeEdit = '';
-
+    let categoryEditToolY = 0;
 
     onMount(() => {
         window.addEventListener('openAppEdit', (e: CustomEvent) => {
@@ -27,6 +27,18 @@
             categoryStore.set(tmp)
         })
     })
+
+    const openCategoryEditTool = (e: MouseEvent, category: any, category_id: string) => {
+        nameBeforeEdit = category.category_name;
+        colorBeforeEdit = category.color;
+        emojyBeforeEdit = category.emojy;
+        editingCaterogry = category_id;
+        const target = e.target as HTMLElement;
+        categoryEditToolY = target.getBoundingClientRect().y - target.parentElement.parentElement.parentElement.parentElement.getBoundingClientRect().y;
+
+        console.log(categoryEditToolY);
+        e.preventDefault();    
+    }
 </script>
 
 {#if appToEdit}
@@ -40,16 +52,10 @@
         <div class="categoriesSelect">
             <div class="categoriesWrap">
                 {#each Object.entries($categoryStore).sort((a, b)=>{return a[1].category_name < b[1].category_name ? -1 : 1}) as [category_id, category]}
-                    <!-- svelte-ignore a11y-no-static-element-interactions -->
                     <div class="categoryBtn" 
-                        style="border-left: 4px solid {category.color}; background-color: {$categoryMapStore[appToEdit] === category_id ? 'var(--super_dark)' : ''}"
-                        on:contextmenu={e=>{
-                            nameBeforeEdit = category.category_name;
-                            colorBeforeEdit = category.color;
-                            emojyBeforeEdit = category.emojy;
-                            e.preventDefault();
-                            editingCaterogry = category_id;
-                        }}>
+                        style="background-color: {$categoryMapStore[appToEdit] === category_id ? 'var(--super_dark)' : ''}"
+                    >
+                        <span class="categoryColor" style="background-color: {category.color}"></span>
                         <!-- svelte-ignore a11y-click-events-have-key-events -->
                         <!-- svelte-ignore a11y-no-static-element-interactions -->
                         <div class="categoryName" 
@@ -62,13 +68,9 @@
                                 appToEdit = '';
                                 editingCaterogry = '';
                             })
-                        }}>{category.category_name} {category.emojy}</div>
-                        <!-- <div class="controllsWrap">
-                            <button on:click={()=>openEditTool(category.category_id)}><EditBtn/></button>
-                            <button><DeleteBtn/></button>
-                        </div> -->
+                        }} on:contextmenu={(e) => {openCategoryEditTool(e, category, category_id)}}>{category.category_name} {category.emojy}</div>
                         {#if editingCaterogry === category_id}
-                            <div class="categoryEditTool">
+                            <div class="categoryEditTool" style="top:{ categoryEditToolY}px;">
                                 <div style="display: flex;">
                                     
                                     <input type="text" bind:value={$categoryStore[category_id].category_name}>
@@ -98,19 +100,20 @@
                 {/each}
             </div>
         </div>
-    </div>
+        </div>
     </main>
 {/if}
 
 <style>
     main{
         backdrop-filter: blur(4px);
-        background-color: #00000073;
-        position: fixed;
+        background-color: #00000031;
+        position: absolute;
         width: 100vw;
         height: 100vh;
         top: 0;
         left: 0;
+        z-index: 10;
     }
     .toolWrap{
         top: 50%;
@@ -119,8 +122,8 @@
         display: block;
         justify-content: center;
         align-items: center;
-        background-color: var(--wash);
-        position: fixed;
+        background-color: var(--base);
+        position: absolute;
         padding: 8px;
         border-radius: 4px;
         box-shadow:
@@ -153,22 +156,17 @@
         min-width: 400px;
         justify-content: space-between;
         cursor:default;
-        position: relative;
-        border-bottom: 1px solid var(--border-color);
         cursor: pointer;
-    }
-    .categoryBtn:last-child{
-        border-bottom: none;
+        border-bottom: 1px solid var(--border-color);
     }
     .categoryBtn:hover{
-        background-color: var(--base);
+        background-color: var(--wash);
     }
     .categoryName{
         width: 100%;
-        padding: 4px;
         font-size: 1rem;
         text-align: right;
-        position: relative;
+        padding: 4px;
     }
     .delBtn{
         background-color: black;
@@ -183,13 +181,12 @@
     .categoryEditTool{
         padding: 12px;
         position: absolute;
-        width: 100%;
+        width: calc(100% + 100px);
         height: fit-content;
-        background-color: var(--base);
+        background-color: var(--wash);
         color: var(--text);
         top: 0;
-        bottom: 0;
-        transform: translateY(40px);
+        transform: translate(-62px, 40px);
         border-radius: 4px;
         z-index: 1;
         box-shadow:
@@ -209,7 +206,7 @@
         z-index: 2;
     }
     .categoryEditTool input{
-        background-color: var(--base);
+        background-color: var(--wash);
         border: 1px solid var(--pastel-blue);
         width: 100%;
         color: var(--text);
@@ -218,20 +215,30 @@
         margin-bottom: 10px;
     }
     .editBtns{
-        background-color: var(--pastel-green);
-        border: none;
+        background-color: rgb(22, 65, 31);
+        border: 1px solid var(--pastel-green);
         padding: 4px;
         border-radius: 4px;
         cursor: pointer;
         /* border: 1px solid var(--border-color); */
         margin: 4px;
+        color: white;
     }
     .cancelCategoryEdit{
-        background-color: var(--pastel-red);
+        background-color: rgb(65, 22, 22);
+        border: 1px solid var(--pastel-red);
     }
     .editBtnsWrap{
         display: flex;
         flex-direction: row;
         justify-content: right;
+    }
+    .categoryColor{
+        width: 0.5rem;
+        height: 1rem;
+        position: relative;
+        border-radius: 999px;
+        margin: 6px 0 0 6px;
+        transform: translateY(2px);
     }
 </style>
