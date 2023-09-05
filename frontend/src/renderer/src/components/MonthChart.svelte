@@ -1,4 +1,5 @@
 <script lang="ts">
+    //@ts-nocheck
     import { format } from "date-fns"
     import { categoryStore } from "../store/categoryStore"
     import type { appListSchema } from "../util/schemas"
@@ -6,7 +7,6 @@
     import TransitiveValue from "./TransitiveValue.svelte"
     import { quadOut } from "svelte/easing"
     import { flip } from "svelte/animate"
-    import { formatTimeConstantStringSize } from "../util/time"
 
     export let start: string
     export let end: string
@@ -58,8 +58,6 @@
         const firstOfMonth = new Date(start);
         const initial = (firstOfMonth.getDay() + 6) % 7;
         const dayNum = row * 7 + column - initial + 1;
-        const lengthOfPreviusMonth = new Date(firstOfMonth.getFullYear(), firstOfMonth.getMonth(), 0).getDate();
-        const lengthOfThisMonth = new Date(firstOfMonth.getFullYear(), firstOfMonth.getMonth() + 1, 0).getDate();
         const effectiveDate = new Date(firstOfMonth.getFullYear(), firstOfMonth.getMonth(), dayNum)
         const dayString = format(effectiveDate, 'do MMM yyyy');
         return {dayNum: effectiveDate.getDate(), opacity: 1, dayString};
@@ -131,7 +129,7 @@
         pos: {x: number, y: number},
         dayStr: string,
         total: number
-    } = {showing: false, cell: {}, pos: {x: 0, y: 0}, dayStr: ''};
+    } = {showing: false, cell: {}, pos: {x: 0, y: 0}, dayStr: '', total: 0};
     const zeroHoverTooltip = ()=> {
         for(const category of Object.keys($categoryStore)){
             hoverCellInfo.cell[category] = 0;
