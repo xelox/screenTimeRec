@@ -10,6 +10,7 @@
     import { fade } from 'svelte/transition'
     import {activeSortStore} from '../store/globalSort'
     import TransitiveValue from './TransitiveValue.svelte'
+    import ImageIcon from './ImageIcon.svelte'
 
     let list: appListSchema = {}
     let max: number = 0
@@ -72,8 +73,7 @@
                 >
                     <span class="categoryColor" style="background-color: {$categoryStore[$categoryMapStore[app] ?? 'Uncategorized']?.color || 'transparent'};"></span>
                     <span class="appName">
-                        <img src={window.api.path.join(window.api.env.APPDATA,'screenTimeRec','icons',app + '.png')} alt="{app}" style="width: 1rem; height: 1rem; transform: translateY(0.15rem);"
-                        />
+                        <ImageIcon app={app} size="1rem" />
                         {app}
                     </span>
                     <span

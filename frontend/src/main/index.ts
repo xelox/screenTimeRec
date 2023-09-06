@@ -21,7 +21,6 @@ function createWindow(): void {
         frame: false,
         titleBarStyle: 'hidden',
         resizable: false,
-        alwaysOnTop: true,
         ...(process.platform === 'linux' ? { icon } : {}),
         webPreferences: {
             devTools: true,
@@ -34,9 +33,11 @@ function createWindow(): void {
 
     overlay.on('ready-to-show', () => {
         // mainWindow.maximize();
+        overlay.setAlwaysOnTop(true, "screen-saver")
         overlay.show();
         overlay.maximize();
         overlay.setIgnoreMouseEvents(true);
+        overlay.setVisibleOnAllWorkspaces(true);
     })
     overlay.webContents.setWindowOpenHandler((details) => {
         shell.openExternal(details.url)

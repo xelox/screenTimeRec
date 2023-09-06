@@ -3,9 +3,8 @@
     import AppAndCategoryEditor from './components/AppAndCategoryEditor.svelte'
     import SimpleList from './components/simpleList.svelte'
     import PivotAndPeriodControlls from './components/PivotAndPeriodControlls.svelte';
-    import { formatTime, formatTimeConstantStringSize } from './util/time'
     import TransitiveValue from './components/TransitiveValue.svelte'
-    import { categoryMapStore, categoryStore } from './store/categoryStore'
+    import ImageIcon from './components/ImageIcon.svelte'
 
     const args = window.api.argv;
     
@@ -78,7 +77,7 @@
     <div class="overlay">
         <div class="overlayContent">
             <p>
-                <img src="{window.api.path.join(window.api.env.APPDATA,'screenTimeRec','icons',currentWindow.app + '.png')}" alt=""> {currentWindow.app} <br>
+                <ImageIcon app={currentWindow.app} size="0.8rem" /> {currentWindow.app} <br>
                 <TransitiveValue targetValue={currentWindow.time} />
             </p>
         </div>
