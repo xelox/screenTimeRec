@@ -1,6 +1,7 @@
 import sqlite3 from "sqlite3";
 import fs from "fs";
 import path from "path";
+import activeWindow from "active-win";
 
 class DBController {
     private db: sqlite3.Database;
@@ -92,5 +93,33 @@ class DBController {
             this.db.run(`UPDATE category_props SET id = ?, category_name = ?, color = ?, emojy = ? WHERE id = ?`, [...props, category_id], callback);
         })
     }
+
+    public getCurrentAppTime = (():Promise<{app: string, time:number}> =>{
+        return new Promise<{app: string, time:number}>((resolve, reject)=>{
+            activeWindow().then(win=>{
+                if(!win) return resolve({
+                    app: 'none',
+                    time: 0
+                });
+                this.db.all(`SELECT * FROM application_usage WHERE application = ? AND date = ?`, [win.owner.name, new Date().toISOString().split('T')[0]], 
+                (err: any, rows: {
+                    application: string,
+                    date: string,
+                    time: number
+                }[])=>{
+                    if(err) return reject(err);
+                    if(rows.length === 0) return resolve({
+                        app: win.owner.name,
+                        time: 0
+                    });
+                    const time = rows.map(row=>row.time).reduce((a, b)=>a+b);
+                    resolve({
+                        app: win.owner.name,
+                        time: time
+                    });
+                })
+            })
+        })
+    })
 }
 export const dbController = new DBController();

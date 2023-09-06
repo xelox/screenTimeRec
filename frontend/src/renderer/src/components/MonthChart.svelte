@@ -200,17 +200,16 @@
         </div>
         <div class="hoverTooltipCategories">
             {#each Object.entries(hoverCellInfo.cell).sort((a, b)=>{return b[1] - a[1]}) as [category_id, time] (category_id)}
-                <div 
-                    style="opacity: {time >= 60_000 ? 1 : 0.5}"
-                    class="listElement" 
-                    key={category_id}  
-                    animate:flip={{ delay: 0, duration: 350, easing: quadOut }}>
-                    <div class=left>
-                        <div class="categoryColor" style="background-color: {$categoryStore[category_id]?.color || 'black'}"></div>
-                        <span>{category_id}</span>
+                    <div 
+                        class="listElement" 
+                        key={category_id}  
+                        animate:flip={{ delay: 0, duration: 350, easing: quadOut }}>
+                        <div class=left style="display: {time > 0 ? 'block' : 'none'}">
+                            <div class="categoryColor" style="background-color: {$categoryStore[category_id]?.color || 'black'}"></div>
+                            <span>{category_id}</span>
+                        </div>
+                        <span class=right style="display: {time > 0 ? 'block' : 'none'}"><TransitiveValue targetValue={time} duration={700} delay={100}/>{$categoryStore[category_id].emojy}</span>
                     </div>
-                    <span class=right><TransitiveValue targetValue={time} duration={700} delay={100}/>{$categoryStore[category_id].emojy}</span>
-                </div>
             {/each}
         </div>
     </div>
@@ -350,9 +349,7 @@
         display: flex;
         justify-content: space-between;
         align-items: center;
-        padding: 4px;
-        border-radius: 4px;
-        margin-bottom: 4px;
+        padding: 1px;
         overflow: hidden;
     }
     .categoryColor{

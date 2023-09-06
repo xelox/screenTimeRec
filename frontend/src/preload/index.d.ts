@@ -15,6 +15,8 @@ declare global {
             loadCategories: (callback: (err:any, rows: any[])=>void) => void
             setAppCategory: (application: string, category: string, callback: (err:any)=>void) => void
             saveNewCategoryProp: (category_id: string, category_name: string, color: string, emojy: string, callback: (err:any)=>void) => void
+            argv: string[],
+            getCurrentAppTime: () => Promise<{app: string, time:number}>
         }
     }
 }

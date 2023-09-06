@@ -24,6 +24,8 @@ const api = {
     loadCategories: dbController.loadCategories,
     setAppCategory: dbController.setAppCategory,
     saveNewCategoryProp: dbController.saveNewCategoryProp,
+    argv: process.argv,
+    getCurrentAppTime: dbController.getCurrentAppTime,
 }
 
 // Use `contextBridge` APIs to expose Electron APIs to

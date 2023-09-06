@@ -81,6 +81,8 @@ export function formatTimeConstantStringSize(elapsedTime: number) {
     minutes %= 60;
     hours %= 60;
     let resultArr = [];
+    if(elapsedTime === 0) return "Empty";
+    if(!hours && !minutes && !seconds) return "<1sec";
     if (hours > 0) {
         resultArr.push(`${hours}h`);
     }
@@ -90,8 +92,9 @@ export function formatTimeConstantStringSize(elapsedTime: number) {
     } else if(hours > 0) { //if there are no minutes, but there are hours, add 00min
         resultArr.push(`00min`);
     }
-    if(!hours && !minutes)
-        return"<1min";
+    if (seconds > 0 && (!hours && !minutes)) {
+        resultArr.push(`${seconds}sec`);
+    } 
     return resultArr.join(" ");
 }
 
