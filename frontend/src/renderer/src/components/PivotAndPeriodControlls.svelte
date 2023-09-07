@@ -67,10 +67,10 @@
     });
 </script>
 
-<div class="periodTypeWrap" on:wheel={mouseScrollOnPeriodType}>
+<div class="periodTypeWrap" on:wheel|passive={mouseScrollOnPeriodType}>
     <span class="periodTypeControll">{periodType}</span>
 </div>
-<div class="pivotDateControlls" on:wheel={mouseScrollOnPeriod}>
+<div class="pivotDateControlls" on:wheel|passive={mouseScrollOnPeriod}>
     <button on:click={() => {changePeriod(-1)}}>{'<'}</button>
     <span class="periodTitle">
         {#if periodType === 'day'}

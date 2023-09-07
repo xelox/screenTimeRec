@@ -65,7 +65,6 @@
 
     const loadData = () => {
         const now = format(new Date(), 'yyyy-MM-dd');
-        console.log(start, end);
         const tmpGrid: Grid = [
             [{total: 0, categories: {}}, {total: 0, categories: {}}, {total: 0, categories: {}}, {total: 0, categories: {}}, {total: 0, categories: {}}, {total: 0, categories: {}}],
             [{total: 0, categories: {}}, {total: 0, categories: {}}, {total: 0, categories: {}}, {total: 0, categories: {}}, {total: 0, categories: {}}, {total: 0, categories: {}}],
@@ -80,7 +79,7 @@
         window.api.loadPeriod(start, end, (err, data) => {
             const tmpWeekTotals = [0, 0, 0, 0, 0, 0, 0];
             if (err) {
-                console.log(err)
+                console.error(err)
                 return
             }
             for(let i = 0; i < 7; i++){
