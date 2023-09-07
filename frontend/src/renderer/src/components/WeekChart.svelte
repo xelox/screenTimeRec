@@ -220,10 +220,7 @@
     </div>
     <div class="barChartWrap">
         {#each Object.entries(graphData.dayData) as [day, apps]}
-        <!-- svelte-ignore a11y-no-static-element-interactions -->
-        <!-- @ts-ignore -->
-        <!-- svelte-ignore a11y-click-events-have-key-events -->
-        <div  class="dayHolder {apps.isCurrentDate ? 'currentDate' : ''}"
+        <button  class="dayHolder {apps.isCurrentDate ? 'currentDate' : ''}"
         on:click={() => {
             const event = new CustomEvent('setDateToView', { detail: apps.actualDateISO })
             window.dispatchEvent(event)
@@ -232,8 +229,7 @@
                 <div class="xLabel">{day}</div>
                 <div class="appBoxWrap" style="max-height: {Object.keys(apps.appData).length ? 300 : 1}px;">
                     {#each Object.entries(apps.appData).sort($activeSortStore) as [app, time] (app)}
-                        <!-- svelte-ignore a11y-no-static-element-interactions -->
-                        <div
+                        <button
                             class="appBox"
                             animate:flip={{ delay: 0, duration: 400, easing: quintOut }}
                             on:contextmenu={()=>{
@@ -257,11 +253,11 @@
                             key={app}
                             style="height: {(time.total / graphData.max) *
                                 280}px; background-color: {$categoryStore[$categoryMapStore[app] ?? 'Uncategorized']?.color || 'transparent'}"
-                        ></div>
+                        ></button>
                     {/each}
                 </div>
             </div>
-        </div>
+        </button>
         {/each}
     </div>
 </div>
@@ -331,6 +327,9 @@
         border-right: none;
     }
     .dayHolder {
+        color: var(--text);
+        border: none;
+        background-color: transparent;
         height: 300px;
         width: 100%;
         border-right: 1px solid var(--border-color);
@@ -351,7 +350,7 @@
         /* border: 1px solid var(--super_dark) !important; */
     }
     .xLabel {
-        transform: translate(-10px, 24px) rotate(15deg);
+        transform: translate(-10px, 18px) rotate(15deg);
         width: calc(300px / 7);
         text-align: center;
         transform-origin: 0 0;
@@ -373,6 +372,7 @@
         z-index: 2;
     }
     .appBox {
+        border: none;
         width: 100%;
         color: black;
         z-index: 2;

@@ -42,58 +42,57 @@
 
 <div class="listAll">
     <div class="scrollAll">
-    <div
-        class="noDataIndicator"
-        style="
-        text-align: center; 
-        opacity: {Object.keys(list).length ? '0' : '1'};
-        display: block;
-        overflow: hidden;
-        font-size: 1.5rem;
-        transition: all 0.5s ease-in-out;"
-    >
-        <span>No data available here!</span>
-    </div>
-    {#if Object.keys(list).length}
-        <main
-            in:fade={{ duration: 500, easing: quintOut }}
-            out:fade={{ duration: 500, easing: quintOut }}
+        <div
+            class="noDataIndicator"
+            style="
+            text-align: center; 
+            opacity: {Object.keys(list).length ? '0' : '1'};
+            display: block;
+            overflow: hidden;
+            font-size: 1.5rem;
+            transition: all 0.5s ease-in-out;"
         >
-            {#each Object.entries(list).sort($activeSortStore) as [app, total], i (app)}
-                <!-- style="color: {interpolateColor(normalizeValue(total, data.appMin, data.appMax), colorScale)};" -->
-                <!-- svelte-ignore a11y-click-events-have-key-events -->
-                <!-- svelte-ignore a11y-no-static-element-interactions -->
-                <div
-                    class="listElement"
-                    animate:flip={{ delay: 0, duration: 400, easing: quintOut }}
-                    key={app}
-                    on:click={() => {
-                        openAppEdit(app)
-                    }}
-                >
-                    <span class="categoryColor" style="background-color: {$categoryStore[$categoryMapStore[app] ?? 'Uncategorized']?.color || 'transparent'};"></span>
-                    <span class="appName">
-                        <ImageIcon app={app} size="1rem" />
-                        {app}
-                    </span>
-                    <span
-                        class="timeApp"
-                        style="color: {interpolateColor(
-                            normalizeValue(total.total, min, max),
-                            colorScale
-                        )};"
-                        ><TransitiveValue targetValue={total.total} />
-                        {$categoryStore[$categoryMapStore[app] ?? 'Uncategorized']?.emojy || ''}</span
+            <span>No data available here!</span>
+        </div>
+        {#if Object.keys(list).length}
+            <main
+                in:fade={{ duration: 500, easing: quintOut }}
+                out:fade={{ duration: 500, easing: quintOut }}
+            >
+                {#each Object.entries(list).sort($activeSortStore) as [app, total], i (app)}
+                    <button
+                        class="listElement"
+                        animate:flip={{ delay: 0, duration: 400, easing: quintOut }}
+                        key={app}
+                        on:click={() => {
+                            openAppEdit(app)
+                        }}
                     >
-                </div>
-            {/each}
-        </main>
-    {/if}
-</div>
+                        <span class="categoryColor" style="background-color: {$categoryStore[$categoryMapStore[app] ?? 'Uncategorized']?.color || 'transparent'};"></span>
+                        <span class="appName">
+                            <ImageIcon app={app} size="1rem" />
+                            {app}
+                        </span>
+                        <span
+                            class="timeApp"
+                            style="color: {interpolateColor(
+                                normalizeValue(total.total, min, max),
+                                colorScale
+                            )};"
+                            ><TransitiveValue targetValue={total.total} />
+                            {$categoryStore[$categoryMapStore[app] ?? 'Uncategorized']?.emojy || ''}</span
+                        >
+                    </button>
+                {/each}
+            </main>
+        {/if}
+    </div>
 </div>
 
 <style>
     .listElement {
+        text-align: left;
+        border: none;
         display: flex;
         width: 100%;
         justify-content: space-between;
