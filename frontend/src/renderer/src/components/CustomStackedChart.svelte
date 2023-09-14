@@ -5,7 +5,8 @@
     import WeekChart from './WeekChart.svelte'
     import {activeSortStore} from '../store/globalSort'
     import MonthChart from './MonthChart.svelte'
-    import { fade, scale, slide } from 'svelte/transition'
+    import { scale } from 'svelte/transition'
+    import DayChart from './DayChart.svelte'
 
    
 
@@ -26,7 +27,7 @@
 
   
 
-    let periodType = 'month';
+    let periodType = 'day';
     let start = format(getMonday(new Date()), 'yyyy-MM-dd');
     let end = format(getSunday(new Date()), 'yyyy-MM-dd');
 
@@ -49,6 +50,10 @@
     {:else if periodType === 'month'}
         <div in:scale>
             <MonthChart start={start} end={end}/>
+        </div>
+    {:else if periodType === 'day'}
+        <div in:scale>
+            <DayChart start={start}/>
         </div>
     {/if}
     <div class="sortControlls">

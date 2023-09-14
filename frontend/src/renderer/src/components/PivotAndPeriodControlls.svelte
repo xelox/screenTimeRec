@@ -5,7 +5,7 @@
 
     const possiblePeriodTypes = ['day', 'week', 'month', 'year'];
     let periodTypeIndex = 2;
-    let periodType = 'month';
+    let periodType = 'day';
 
     const startFunctionOfType = {
         day: (pivotDate: Date) => pivotDate,
