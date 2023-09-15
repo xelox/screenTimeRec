@@ -84,7 +84,7 @@
     <button on:click={() => {changePeriod(-1)}}>{'<'}</button>
     <span class="periodTitle">
         {#if periodType === 'day'}
-        {format(pivotDate, 'do MMM yyyy')}
+        {format(pivotDate, 'EE do MMM yyyy')}
         {:else if periodType === 'week'}
         from {format(new Date(start), 'EE do MMM yyyy')}
         {:else if periodType === 'month'}
