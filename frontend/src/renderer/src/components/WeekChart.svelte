@@ -1,4 +1,5 @@
 <script lang="ts">
+    //@ts-nocheck
     import { format } from "date-fns"
     import type { stackedWeedGraphSchema } from "../util/schemas"
     import { formatTime, getMonday } from "../util/time"
