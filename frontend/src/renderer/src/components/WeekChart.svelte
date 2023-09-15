@@ -286,12 +286,6 @@
         font-size: 1.1rem;
         z-index: 8;
     }
-    .chartBarHoveredTip {
-        left: 50%;
-        position: relative;
-        transform: translateX(-50%);
-        max-width: max-content;
-    }
     .chartWrap {
         width: 300px;
         height: 300px;
