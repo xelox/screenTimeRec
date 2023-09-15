@@ -76,7 +76,7 @@
         {#if periodType === 'day'}
         {format(pivotDate, 'do MMM yyyy')}
         {:else if periodType === 'week'}
-        from {format(pivotDate, 'EE do MMM yyyy')}
+        from {format(new Date(start), 'EE do MMM yyyy')}
         {:else if periodType === 'month'}
         {format(pivotDate, 'MMM yyyy')}
         {:else if periodType === 'year'}
