@@ -2,6 +2,7 @@
     import { onMount } from "svelte"
     import { categoryMapStore, categoryStore } from "../store/categoryStore"
     import TransitiveValue from "./TransitiveValue.svelte"
+    import type { appListSchema } from "../util/schemas"
     
     const transitionDuration = 600;
     const outerRadius = 130;
@@ -15,51 +16,50 @@
     let canvas: HTMLCanvasElement | null = null;
     let ctx: CanvasRenderingContext2D | null = null;
     let lastUpdate = Date.now();
-    let mx = 150, my = 150;
     onMount(() => {
         if(!canvas) return;
         ctx = canvas.getContext('2d');
         ctx.imageSmoothingEnabled = true;
         canvas.width = 300;
         canvas.height = 300;
-        mx = canvas.width / 2;
-        my = canvas.height / 2;
         console.log(ctx);
 
         canvas.addEventListener('mousemove', (e) => {
-            mx = e.offsetX;
-            my = e.offsetY;
-
-            if(!geometricData) return;
-            const d = Math.sqrt((mx - canvas.width / 2) ** 2 + (my - canvas.height / 2) ** 2);
-            if(d > innerRadius && d < outerRadius){
-                const atomp1 = Math.atan2(my - canvas.height / 2, mx - canvas.width / 2);
-                const atom = atomp1 < 0 ? 2 * Math.PI + atomp1 : atomp1;
-                for(const [app, {startAngle, endAngle, time}] of Object.entries(geometricData)){
-                    if(atom > startAngle && atom < endAngle){
-                        if(app === hoverApp?.name) {
-                            hoverApp.show = true;
-                            break;
-                        }
-                        const middleAngle = (startAngle + endAngle) / 2;
-                        const x = Math.cos(middleAngle) * (outerRadius + innerRadius) / 2 + canvas.width / 2;
-                        const y = Math.sin(middleAngle) * (outerRadius + innerRadius) / 2 + canvas.height / 2;
-                        hoverApp = {
-                            name: app,
-                            time,
-                            show: true,
-                            pos: {x, y},
-                            up: middleAngle > Math.PI
-                        }
-                        break;
-                    }
-                }
-            }
-            else hoverApp.show = false;
-        })
-
+            const mx = e.offsetX;
+            const my = e.offsetY;
+            findHoverAppAndAct(mx, my);
+       })
         renderData();
     });
+
+const findHoverAppAndAct = (mx: number, my: number) => {
+    if(!geometricData) return;
+    const d = Math.sqrt((mx - canvas.width / 2) ** 2 + (my - canvas.height / 2) ** 2);
+    if(d > innerRadius && d < outerRadius){
+        const atomp1 = Math.atan2(my - canvas.height / 2, mx - canvas.width / 2);
+        const atom = atomp1 < 0 ? 2 * Math.PI + atomp1 : atomp1;
+        for(const [app, {startAngle, endAngle, time}] of Object.entries(geometricData)){
+            if(atom > startAngle && atom < endAngle){
+                if(app === hoverApp?.name) {
+                    hoverApp.show = true;
+                    break;
+                }
+                const middleAngle = (startAngle + endAngle) / 2;
+                const x = Math.cos(middleAngle) * (outerRadius + innerRadius) / 2 + canvas.width / 2;
+                const y = Math.sin(middleAngle) * (outerRadius + innerRadius) / 2 + canvas.height / 2;
+                hoverApp = {
+                    name: app,
+                    time,
+                    show: true,
+                    pos: {x, y},
+                    up: middleAngle > Math.PI
+                }
+                break;
+            }
+        }
+    }
+    else if (hoverApp) hoverApp.show = false;
+}
 
     type GeometricData = {
         [app: string]: {
@@ -91,13 +91,28 @@
     const proccessRawData = (rawData: any[]) => {
         console.log('proccessing new data'); 
         const tmpData: Data = {total: 0, appdata: {}};
+        const tmpList: appListSchema = {};
+        let min = Infinity; 
         for(const item of rawData) {
-            if(item.application === 'unknown') continue;
+            const app = item.application;
+            if(app === 'unknown') continue;
+            if(!categoryMapStore[app])
+                    $categoryMapStore[app] = item.category_id ?? 'Uncategorized';
+            //chart data logic
             tmpData.total += item.time;
-            if(!tmpData.appdata[item.application]) tmpData.appdata[item.application] = item.time;
-            else tmpData.appdata[item.application] += item.time;
+            if(!tmpData.appdata[app]) tmpData.appdata[item.application] = item.time;
+            else tmpData.appdata[app] += item.time;
+            //simple list logic
+            tmpList[app] = {
+                total: tmpData.appdata[app],
+                activeTime: 0,
+                inactiveTime: 0,
+            }
+            if(tmpList[app].total < min) min = tmpList[item.application].total;
         }
         data = tmpData;
+        const e = new CustomEvent('newSimpleList', {detail: {list: tmpList, max: data.total, min}});
+        window.dispatchEvent(e);
     }
 
     const renderData = () => {
@@ -132,7 +147,6 @@
             ctx.strokeStyle = 'black';
             ctx.stroke();
             ctx.closePath();
-
             if(op >= 1) {
                 tmpGeometricData[app] = {
                     startAngle: startAngle,
@@ -140,7 +154,6 @@
                     time
                 }
             }
-
             startAngle += a;
         }
         ctx.beginPath();
@@ -180,9 +193,7 @@
 </main>
 
 <style>
-    main{
-        position: relative;
-    }
+    main{ position: relative; }
     canvas{
         position: relative;
         width: 300px;
