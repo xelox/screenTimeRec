@@ -5,7 +5,6 @@ export function formatTime(elapsedTime) {
     let hours = Math.floor(minutes / 60);
     seconds %= 60;
     minutes %= 60;
-    hours %= 60;
     let resultArr = [];
     if (hours > 0) {
         resultArr.push(`${hours}h`);
@@ -43,7 +42,6 @@ export function formatTimeHoursOnly(elapsedTime: number) {
     let hours = Math.floor(minutes / 60);
     seconds %= 60;
     minutes %= 60;
-    hours %= 60;
     let result = "";
     if (hours > 0) {
         result += `${hours}h `;
@@ -57,7 +55,6 @@ export function formatTimeOnlyOneUnit(elapsedTime: number) {
     let hours = Math.floor(minutes / 60);
     seconds %= 60;
     minutes %= 60;
-    hours %= 60;
     let resultArr = [];
     if (hours > 0) {
         resultArr.push(`${hours}h`);
@@ -79,7 +76,6 @@ export function formatTimeConstantStringSize(elapsedTime: number) {
     let hours = Math.floor(minutes / 60);
     seconds %= 60;
     minutes %= 60;
-    hours %= 60;
     let resultArr = [];
     if(elapsedTime === 0) return "Empty";
     if(!hours && !minutes && !seconds) return "<1sec";
