@@ -223,8 +223,13 @@
         {#each Object.entries(graphData.dayData) as [day, apps]}
         <button  class="dayHolder {apps.isCurrentDate ? 'currentDate' : ''}"
         on:click={() => {
-            const event = new CustomEvent('setDateToView', { detail: apps.actualDateISO })
-            window.dispatchEvent(event)
+            const event = new CustomEvent('requestPeriodChange', {
+                detail: {
+                    newPeriodType: 'day',
+                    newPivot: new Date(apps.actualDateISO)
+                }
+            })
+            window.dispatchEvent(event) 
         }}>
             <div class='dayHolderDataHolder'>
                 <div class="xLabel">{day}</div>

@@ -64,6 +64,16 @@
             broadcastPeriodChange();
         }, 200);
         broadcastPeriodChange();
+
+        window.addEventListener('requestPeriodChange', (e: CustomEvent) => {
+            const {newPeriodType, newPivot} = e.detail;
+            if(newPeriodType !== periodType){
+                periodTypeIndex = possiblePeriodTypes.indexOf(newPeriodType);
+                periodType = newPeriodType;
+            }
+            pivotDate = newPivot;
+            broadcastPeriodChange();
+        });
     });
 </script>
 

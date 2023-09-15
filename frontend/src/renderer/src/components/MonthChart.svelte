@@ -15,7 +15,8 @@
         dayNum?: {
             dayNum: number,
             opacity: number,
-            dayString: string
+            dayString: string,
+            date: Date
         },
         total: number,
         isCurrent?: boolean,
@@ -60,7 +61,7 @@
         const dayNum = row * 7 + column - initial + 1;
         const effectiveDate = new Date(firstOfMonth.getFullYear(), firstOfMonth.getMonth(), dayNum)
         const dayString = format(effectiveDate, 'do MMM yyyy');
-        return {dayNum: effectiveDate.getDate(), opacity: 1, dayString};
+        return {dayNum: effectiveDate.getDate(), opacity: 1, dayString, date: effectiveDate};
     }
 
     const loadData = () => {
@@ -167,9 +168,15 @@
                 {#each rows as cell, j}
                     <!-- svelte-ignore a11y-no-static-element-interactions -->
                     <!-- svelte-ignore a11y-mouse-events-have-key-events -->
+                    <!-- svelte-ignore a11y-click-events-have-key-events -->
                     <div class="cell" style="background-color:{cell.isCurrent ? 'var(--wash)' : ''}"
                         on:mouseover={(e)=>serHoverCellInfo(cell, e)}
                         on:mouseleave={(e)=>serHoverCellInfo(null, e)}
+                        on:click={()=>{
+                            const newPivot = cell.dayNum?.date;
+                            const newPeriodType = 'day';
+                            window.dispatchEvent(new CustomEvent('requestPeriodChange', {detail: {newPivot, newPeriodType}}));
+                        }}
                     >
                         <div class="cellContentWrap" style="max-height: {Object.keys(cell.categories).length ? '100%' : '0%'}">
                             {#each Object.entries(cell.categories).sort((a, b)=>{return a[1] - b[1]}) as [category, time]}
@@ -185,7 +192,11 @@
                         <div class="dayOfMonth" style="opacity: {cell.dayNum?.opacity || 0}; background-color:{cell.isCurrent ? 'var(--pastel-red)' : ''}; color:{cell.isCurrent?'black':'inherit'}"><span>{cell.dayNum?.dayNum || ''}</span></div>
                     </div>
                     {#if i === 0}
-                        <div class="weekWrap" style="top: {j * (300/7)}px"><span><TransitiveValue targetValue={weekTotals[j]}/></span></div>
+                        <div class="weekWrap" style="top: {j * (300/7)}px"><button on:click={()=>{
+                            const newPivot = grid[0][j].dayNum?.date;
+                            const newPeriodType = 'week';
+                            window.dispatchEvent(new CustomEvent('requestPeriodChange', {detail: {newPivot, newPeriodType}}));
+                        }}><TransitiveValue targetValue={weekTotals[j]}/></button></div>
                     {/if}
                 {/each}
             </div>
@@ -313,8 +324,17 @@
     .weekWrap:hover{
         background-color: var(--base);
     }
-    .weekWrap span{
-        transform: translateX(-320px)
+    .weekWrap button{
+        transform: translateX(-320px);
+        display: inline-block;
+        /* width: max-content; */
+        background-color: transparent;
+        text-align: right;
+        color: var(--text);
+        border: none;
+        outline: none;
+        font-size: 1rem;
+        cursor: pointer;
     }
     .hoverTooltipWrap{
         pointer-events: none;
