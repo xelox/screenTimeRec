@@ -145,7 +145,6 @@ const findHoverAppAndAct = (mx: number, my: number) => {
             ctx.lineTo(canvas.width / 2, canvas.height / 2);
             ctx.fillStyle = fillStyle;
             ctx.fill();
-            ctx.strokeStyle = con ? 'rgb(255, 0, 157)' : 'black';
             ctx.stroke();
             ctx.closePath();
             if(op >= 1) {

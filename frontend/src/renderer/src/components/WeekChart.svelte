@@ -209,7 +209,8 @@
 <main>
 <div class="hoverTooltip" style="left: {mouseX}px; top: {mouseY}px; opacity: {hoverElement.showing ? 1 : 0};">
     {#if hoverElement}
-        {hoverElement.app}: {hoverElement.time}
+        {hoverElement.app}: <br>
+        {hoverElement.time}
     {/if}
 </div>
 
