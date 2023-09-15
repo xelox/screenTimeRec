@@ -22,7 +22,6 @@
         ctx.imageSmoothingEnabled = true;
         canvas.width = 300;
         canvas.height = 300;
-        console.log(ctx);
 
         canvas.addEventListener('mousemove', (e) => {
             const mx = e.offsetX;
@@ -89,7 +88,6 @@ const findHoverAppAndAct = (mx: number, my: number) => {
     let data: Data = {total: 0, appdata: {}};
 
     const proccessRawData = (rawData: any[]) => {
-        console.log('proccessing new data'); 
         const tmpData: Data = {total: 0, appdata: {}};
         const tmpList: appListSchema = {};
         let min = Infinity; 
@@ -165,7 +163,6 @@ const findHoverAppAndAct = (mx: number, my: number) => {
         ctx.closePath();
         if(op >= 1 && !geometricData){
             geometricData = tmpGeometricData;
-            console.log(geometricData);
         }
     }
 
@@ -173,6 +170,10 @@ const findHoverAppAndAct = (mx: number, my: number) => {
         window.api.loadPeriod(start, start, (err, rawData) => {
             if(err) return console.error(err);
             geometricData = null;
+            if(data.total === 0) {
+                proccessRawData(rawData);
+                lastUpdate = Date.now();
+            }
             lastUpdate = Date.now() + transitionDuration / 2;
             setTimeout(()=>{proccessRawData(rawData)}, transitionDuration / 2);
         })
