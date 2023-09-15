@@ -103,6 +103,7 @@
         background-color: transparent;
         color: var(--text);
         font-size: 1rem;
+        border-bottom: 1px solid var(--dark-blue);
     }
     .listElement:last-child {
         border-bottom: none;

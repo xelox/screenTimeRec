@@ -5,8 +5,8 @@
     import type { appListSchema } from "../util/schemas"
     
     const transitionDuration = 600;
-    const outerRadius = 130;
-    const innerRadius = 70;
+    const outerRadius = 140;
+    const innerRadius = 90;
 
     const easeFunc = (x: number): number => {
         return x < 0.5 ? 16 * x * x * x * x * x : 1 - Math.pow(-2 * x + 2, 5) / 2;
@@ -137,14 +137,15 @@ const findHoverAppAndAct = (mx: number, my: number) => {
             const a = (time / data.total) * maxAngle;
             const category = $categoryMapStore[app];
             const fillStyle = $categoryStore[category]?.color || 'black';
-            const effectiveOuterRadius = hoverApp?.name === app && hoverApp?.show ? outerRadius + 10 : outerRadius;
+            const con = hoverApp?.name === app && hoverApp?.show;
+            const effectiveOuterRadius = con ? outerRadius + 4 : outerRadius;
             ctx.beginPath();
             ctx.lineTo(canvas.width / 2, canvas.height / 2);
             ctx.arc(canvas.width / 2, canvas.height / 2, effectiveOuterRadius, startAngle, startAngle + a, false);
             ctx.lineTo(canvas.width / 2, canvas.height / 2);
             ctx.fillStyle = fillStyle;
             ctx.fill();
-            ctx.strokeStyle = 'black';
+            ctx.strokeStyle = con ? 'rgb(255, 0, 157)' : 'black';
             ctx.stroke();
             ctx.closePath();
             if(op >= 1) {
@@ -183,16 +184,33 @@ const findHoverAppAndAct = (mx: number, my: number) => {
 </script>
 
 <main>
+    {#if data}
+        <div class="totalTip">
+            Total: <br> <TransitiveValue targetValue={data.total}/>
+        </div>
+    {/if}
+
     <canvas bind:this={canvas}/>
     {#if hoverApp}
-        <div class="hoverTooltip" style={`left: ${hoverApp.pos.x}px; top: ${hoverApp.pos.y}px; transform: translate(-50%, ${hoverApp.up? 'calc(-100% - 16px)' : '16px'}); opacity: ${hoverApp.show ? 0.85 : 0}`}>
+        <div class="hoverTooltip" style={`left: ${hoverApp.pos.x}px; top: ${hoverApp.pos.y}px; transform: translate(-50%, ${hoverApp.up? 'calc(-100% - 16px)' : '16px'}); opacity: ${hoverApp.show ? 0.95 : 0}`}>
             <h3>{hoverApp.name}</h3>
-            <TransitiveValue targetValue={hoverApp.time}/>
+            <TransitiveValue targetValue={hoverApp.time}/> <br>
+            <TransitiveValue targetValue={hoverApp.time / data.total * 100} formatFunction={(v) => `${v.toFixed(2)}%`}/>
         </div>
     {/if}
 </main>
 
 <style>
+    .totalTip{
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        text-align: center;
+        padding: 4px;
+        border-radius: 4px;
+        z-index: 9;
+    }
     main{ position: relative; }
     canvas{
         position: relative;
@@ -211,5 +229,6 @@ const findHoverAppAndAct = (mx: number, my: number) => {
         width: max-content;
         transition: all 0.3s ease-in-out;
         transform: translateX(-50%);
+        min-width: 150px;
     }
 </style>

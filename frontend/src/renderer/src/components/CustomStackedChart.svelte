@@ -44,11 +44,11 @@
 
 <main>
     {#if periodType === 'week'}
-        <div in:scale>
+        <div in:scale style="margin-bottom: 30px;">
             <WeekChart start={start} end={end}/>
         </div>
     {:else if periodType === 'month'}
-        <div in:scale>
+        <div in:scale style="margin-bottom: 36px;">
             <MonthChart start={start} end={end}/>
         </div>
     {:else if periodType === 'day'}
@@ -94,6 +94,7 @@
     :root {
         --border-color: rgb(100, 49, 241);
     }
+    
     main {
         position: relative;
         display: flex;
@@ -104,22 +105,23 @@
         width: 2rem;
         text-align: center;
     }
- 
 
     .sortControlls {
         display: flex;
         justify-content: space-around;
         width: 306px;
-        margin-top: 36px;
+        margin-top: 0px;
         margin-bottom: 10px;
         left: 50%;
         position: relative;
         transform: translateX(-50%);
     }
+
     .sortControlls div {
         display: flex;
         justify-content: space-around;
     }
+
     .sortControlls button {
         color: var(--text);
         background-color: var(--wash);

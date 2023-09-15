@@ -4,7 +4,7 @@
     import { onMount } from 'svelte'
 
     const possiblePeriodTypes = ['day', 'week', 'month', 'year'];
-    let periodTypeIndex = 2;
+    let periodTypeIndex = 0;
     let periodType = 'day';
 
     const startFunctionOfType = {
@@ -60,9 +60,6 @@
     }
 
     onMount(() => {
-        setTimeout(() => {
-            broadcastPeriodChange();
-        }, 200);
         broadcastPeriodChange();
 
         window.addEventListener('requestPeriodChange', (e: CustomEvent) => {
