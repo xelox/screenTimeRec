@@ -8,7 +8,8 @@ class DBController {
 
     constructor() {
         const dbDirPath = path.join(process.env.APPDATA ?? '.', 'screenTimeRec');
-        const dbPath = path.join(process.env.APPDATA ?? '.', 'screenTimeRec', 'db.sqlite');
+        // const dbPath = path.join(process.env.APPDATA ?? '.', 'screenTimeRec', 'db.sqlite');
+        const dbPath = '/home/alex/.screenTimeRec/db.sqlite';
         console.log(dbDirPath);
         if (fs.existsSync(dbDirPath)) {
             fs.mkdirSync(path.dirname(dbDirPath), { recursive: true });
@@ -48,11 +49,11 @@ class DBController {
 
     public loadPeriod = (start: string, end: string, callback: (err, rows: any[])=>void) => {
         this.db.all(`
-        SELECT 
+        SELECT
             application_usage.*, category_map.category_id
-        FROM 
+        FROM
             application_usage
-        LEFT JOIN 
+        LEFT JOIN
             category_map ON application_usage.application = category_map.application
         WHERE date BETWEEN ? AND ?
         `, [start, end], callback);
@@ -60,11 +61,11 @@ class DBController {
 
     public loadDay = (date: string, callback: (err, rows: any[])=>void) => {
         this.db.all(`
-        SELECT 
+        SELECT
             application_usage.*, category_map.category_id
-        FROM 
+        FROM
             application_usage
-        LEFT JOIN 
+        LEFT JOIN
             category_map ON application_usage.application = category_map.application
         WHERE application_usage.date = ?
         `, [date], callback);
@@ -101,7 +102,7 @@ class DBController {
                     app: 'none',
                     time: 0
                 });
-                this.db.all(`SELECT * FROM application_usage WHERE application = ? AND date = ?`, [win.owner.name, new Date().toISOString().split('T')[0]], 
+                this.db.all(`SELECT * FROM application_usage WHERE application = ? AND date = ?`, [win.owner.name, new Date().toISOString().split('T')[0]],
                 (err: any, rows: {
                     application: string,
                     date: string,

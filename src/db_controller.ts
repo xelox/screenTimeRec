@@ -9,15 +9,21 @@ class DBController {
     private ready = false;
 
     constructor() {
-        const dbDirPath = path.join(process.env.APPDATA ?? '.', 'screenTimeRec');
-        const dbPath = path.join(process.env.APPDATA ?? '.', 'screenTimeRec', 'db.sqlite');
+        const dbDirPath = process.env.APPDATA ? path.join(process.env.APPDATA!, '.screenTimeRec') : path.join('~', '.screenTimeRec'); 
+        // const dbPath = path.join(dbDirPath, 'db.sqlite');
+        const dbPath = '/home/alex/.screenTimeRec/db.sqlite';
         console.log(dbDirPath);
-        if (fs.existsSync(dbDirPath)) {
-            fs.mkdirSync(path.dirname(dbDirPath), { recursive: true });
+
+        try {
+            if (!fs.existsSync(dbDirPath)) {
+                fs.mkdirSync(path.dirname(dbDirPath), { recursive: true });
+                console.log('Made dir');
+            }
+            if (!fs.existsSync(dbPath)) fs.writeFileSync(dbPath, '', 'utf-8');
+        } catch (error) {
+            console.error(error)   
         }
-        if (!fs.existsSync(dbPath)) fs.writeFileSync(dbPath, '', 'utf-8');
-
-
+        
         this.db = new sqlite3.Database(dbPath, sqlite3.OPEN_READWRITE, (err) => {
             if (err) {
                 console.error(err.message);

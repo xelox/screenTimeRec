@@ -1,11 +1,10 @@
 import activeWindow from "active-win";
 import {format} from 'date-fns';
-import {GlobalKeyboardListener} from "node-global-key-listener";
 import db_controller from "./db_controller";
 import extractFileIcon from "extract-file-icon";
 import path from "path";
 import fs from "fs";
-
+import { exec } from "child_process"
 
 export type tmpActivityMap = {
     [application: string]: {
@@ -15,6 +14,45 @@ export type tmpActivityMap = {
         icon?: boolean
     }
 }
+
+type activeWinSchema = {
+    app: string,
+    title: string,
+    path: string,
+}
+
+const getActiveWinFnFactory = async () => {
+    const isHypr = await new Promise<boolean>((res, _rej) => {
+        exec('hyprctl', (err, _stdout, _stderr)=>{
+            res(Boolean(err))
+        })
+    })   
+    if(isHypr) return (): Promise<activeWinSchema | null> => {
+        return new Promise((res, _rej) => {
+            exec('hyprctl activewindow -j', (err, stdout, _stderr) => {
+                if(err) return res(null);
+                const win = JSON.parse(stdout);
+                exec(`readlink /proc/${win.pid}/exe`, (err, stdout, _stderr) => {
+                    if(err) return res(null);
+                    const path = stdout;
+                    res({app: win.class, title: win.title, path});
+                })
+            })
+        });
+    } 
+    return (): Promise<activeWinSchema | null> => {
+        return new Promise((res, _rej) => {
+            activeWindow().then(win => {
+                if(!win) return res(null);
+                const app = win.owner.name;
+                const title = win.title;
+                const path = win.owner.path;
+                return res({app, title, path})
+            })
+        })
+    }
+}
+
 
 export default class TrackerController{
     private activityMap: tmpActivityMap = {};
@@ -28,7 +66,7 @@ export default class TrackerController{
 
     private isActive: boolean = false;
     private isActiveExpiredTimer: NodeJS.Timeout | null = null;
-    private v = new GlobalKeyboardListener();
+    private getActiveWin: () => Promise<activeWinSchema | null> = () => { return new Promise((res, _r) => res(null)) }
 
     private iconOutputDir = path.join(process.env.APPDATA ?? '.', 'screenTimeRec', 'icons');
     constructor(options: {
@@ -36,26 +74,28 @@ export default class TrackerController{
         saveInterval: number,
         activityTimeout: number
     }){
-        if(!fs.existsSync(this.iconOutputDir)) fs.mkdirSync(this.iconOutputDir, {recursive: true});
         this.checkInterval = options.checkInterval;
         this.saveInterval = options.saveInterval;
         this.activityTimeout = options.activityTimeout;
 
+        this.init()
+    }
+
+    private init = async () => {
+        if(!fs.existsSync(this.iconOutputDir)) fs.mkdirSync(this.iconOutputDir, {recursive: true});
+        
+        this.getActiveWin = await getActiveWinFnFactory();
+
         const expire = ()=>{ 
             this.isActive = false; 
         };
-        this.isActiveExpiredTimer = setInterval(expire, this.activityTimeout);
-        this.v.addListener((key, event)=>{
-            this.isActive = true;
-            if(this.isActiveExpiredTimer) clearTimeout(this.isActiveExpiredTimer);
-            this.isActiveExpiredTimer = setTimeout(expire, this.activityTimeout);
-        });
-        
+        this.isActiveExpiredTimer = setInterval(expire, this.activityTimeout);        
         setTimeout(this.initialize, 1000);
+
     }
 
     private trackActiveWindowTime = () => {
-        activeWindow().then(win=>{
+        this.getActiveWin().then(win=>{
             const dateNow = format(Date.now(), 'yyyy-MM-dd');
             if(dateNow !== this.lastCheckDate) {
                 this.saveActivityMap(this.lastCheckDate);
@@ -63,8 +103,8 @@ export default class TrackerController{
             }
             this.lastCheckDate = dateNow;
 
-            const appName = win?.owner.name || 'unknown';
-            const path = win?.owner.path;
+            const appName = win?.app || 'unknown';
+            const path = win?.path;
 
             const now = Date.now();
             const dt = now - this.lastCheckTs;
@@ -82,6 +122,10 @@ export default class TrackerController{
                     path,
                 }
             }
+
+            console.clear()
+            console.log(appName, path)
+
         }).finally(()=>{
             setTimeout(this.trackActiveWindowTime, this.checkInterval);
         })
@@ -119,7 +163,7 @@ export default class TrackerController{
         for(const [application, props] of Object.entries(this.activityMap)){
             if(props.icon || !props.path) continue;
             if(fs.existsSync(path.join(this.iconOutputDir, application + '.png'))) continue;
-            console.log('saving icon', application);
+            
             const iconBuffer = extractFileIcon(props.path, 32)
             fs.writeFileSync(path.join(this.iconOutputDir, application + '.png'), iconBuffer);
             props.icon = true;
